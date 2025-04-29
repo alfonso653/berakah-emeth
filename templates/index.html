@@ -243,10 +243,15 @@
     <!-- Main -->
     <div class="main">
         <!-- Panel Inicio -->
-        <div id="inicio" style="display: block; width: 100%; padding: 30px;">
-                <h2>Bienvenido a Berakah Emeth</h2>
-                <p style="color: #555;">Una plataforma para formarte en la Palabra de Dios. Explora nuestras secciones y crece en tu fe día a día.</p>
-        </div>
+        <div id="inicio" style="display: block; position: relative; width: 100%; height: 100vh; overflow: hidden;">
+            <img src="/static/fondo-berakah-inicio.jpg" alt="Inicio" style="position: absolute; width: 100%; height: 100%; object-fit: cover; filter: brightness(50%) sepia(10%); z-index: 0;">
+            <div style="position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px; color: white;">
+                <h1 style="font-size: 42px; margin-bottom: 20px;">¿Y si no tienes que luchar solo?</h1>
+                <p style="font-size: 18px; max-width: 600px;">
+                    Sabemos que estás buscando algo más. En Berakah Emeth creemos que no llegaste aquí por casualidad. Este puede ser el inicio de un viaje con propósito... uno que no tienes que hacer solo.
+                </p>
+            </div>
+        </div>        
 
         <div id="u-biblica" style="display: flex; width: 100%; flex-direction: row;">
             <div class="sidebar">
@@ -329,7 +334,7 @@
         const inicio = document.getElementById("inicio");
         if (inicio) {
         inicio.style.display = "block";
-        
+
         }
 
         // Crear botones calendario
