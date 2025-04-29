@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Berakah Emeth - Plataforma</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .topbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-container img.logo {
+            height: 200px;
+        }
+        .logo-container img.centro {
+            height: 180px;
+            margin-left: -120px;
+            border-radius: 12px;
+        }
+        .logo-container img.portada {
+            height: 200px;
+            margin-left: -40px;
+            border-radius: 12px;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            position: relative; /* NECESARIO para el subrayado */
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: #444; /* Color del subrayado */
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-links a:hover {
+            background-color: #f0f0f0;
+            color: #444;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombrita elegante */
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: #444; /* Gris sutil al pasar el mouse */
+            top: -2px;   /* Se levanta un poquito */
+        }
+
+        .main {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 300px;
+            background: #f4f4f4;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+        .clase-link {
+            display: block;
+            margin: 8px 0;
+            text-decoration: none;
+            color: #444;
+        }
+        .clase-link:hover {
+            text-decoration: underline;
+        }
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .dia {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+        }
+        .dia:hover {
+            background-color: #e0e0e0;
+        }
+        .completado {
+            background-color: #c3f7c3 !important;
+            font-weight: bold;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: hojaDesplegar 0.6s ease-out;
+            transform-origin: top;
+        }
+        .modal-content-grande {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            animation: hojaDesplegar 0.6s ease-out;
+            transform-origin: top;
+            text-align: center;
+        }
+        .close, .close-semana {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+        .close:hover, .close-semana:hover {
+            color: #000;
+        }
+        @keyframes hojaDesplegar {
+            0% {
+                transform: scale(0.9) rotateX(-90deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotateX(0deg);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="logo-container">
+            <img src="/static/logo.gif" alt="Logo" class="logo">
+            <img src="/static/centro.gif" alt="Centro" class="centro">
+            <img src="/static/portada.gif" alt="Verso" class="portada">
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <div class="nav-links">
+        <a href="#" data-seccion="u-biblica">U Bíblica</a>
+        <a href="#" data-seccion="testimonios">Testimonios</a>
+        <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
+        <a href="#" data-seccion="madre">40 formas de ser madre</a>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+        <div id="u-biblica" style="display: flex; width: 100%; flex-direction: row;">
+            <div class="sidebar">
+                <h2>📚 Secciones</h2>
+                {% for seccion, clases in secciones.items() %}
+                    <strong>{{ seccion }}</strong>
+                    {% for clase in clases %}
+                        <a href="#" class="clase-link" onclick="cargarClase('{{ clase.slug }}')">{{ clase.titulo }}</a>
+                    {% endfor %}
+                    <br>
+                {% endfor %}
+            </div>
+            <div class="content" id="contenido-clase">
+                <p>Selecciona una clase para comenzar.</p>
+            </div>
+        </div>
+
+        <div id="testimonios" style="display: none; width: 100%; padding: 30px;">
+            <h2>📝 Testimonios</h2>
+            <div style="margin-bottom: 30px;">
+                <h3>Juan Pérez <small style="color: gray;"> - 20 abril 2025</small></h3>
+                <p>Antes me sentía perdido, pero Dios me encontró y transformó mi vida completamente. Hoy sirvo con gozo.</p>
+            </div>
+            <div style="margin-bottom: 30px;">
+                <h3>María Gómez <small style="color: gray;"> - 19 abril 2025</small></h3>
+                <p>Dios restauró mi familia. Cada día agradezco por su fidelidad y amor constante. ¡Él es bueno!</p>
+            </div>
+        </div>
+
+        <div id="venciendo-pornografia" style="display: none; width: 100%; padding: 30px;">
+            <h2>🛡️ Venciendo la Pornografía</h2>
+            <p style="color: #555;">Haz clic en un día para ver el versículo y disciplina correspondiente. Marca cuando hayas completado.</p>
+            <div id="calendario" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 20px;"></div>
+        </div>
+
+        <div id="madre" style="display: none; width: 100%; padding: 30px;">
+            <h2>🌸 40 formas de ser madre</h2>
+            <p style="color: #555;">Muy pronto encontrarás aquí enseñanzas hermosas para todas las mamás.</p>
+            <div id="semanas" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-dia-titulo"></h2>
+            <p id="modal-versiculo" style="margin-top: 10px;"></p>
+            <p id="modal-disciplina" style="margin-top: 10px; font-style: italic;"></p>
+        </div>
+    </div>
+
+    <div id="modal-semana" class="modal" style="display: none;">
+        <div class="modal-content-grande">
+            <span class="close-semana">&times;</span>
+            <h2 id="titulo-semana" style="margin-bottom: 20px;"></h2>
+            <div id="contenido-pdf" style="min-height: 400px; display: flex; align-items: center; justify-content: center; border: 2px dashed #ccc; border-radius: 15px; padding: 20px;">
+                <p style="color: #999;">Aquí irá el PDF de muestra de esta semana.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+    function cargarClase(slug) {
+        fetch("/clase/" + slug)
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("contenido-clase").innerHTML = html;
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Crear botones calendario
+        const calendario = document.getElementById("calendario");
+        const modal = document.getElementById("modal");
+        const modalDia = document.getElementById("modal-dia-titulo");
+        const modalVersiculo = document.getElementById("modal-versiculo");
+        const modalDisciplina = document.getElementById("modal-disciplina");
+        const closeBtn = document.querySelector(".close");
+
+        fetch("/static/devocional.json")
+            .then(res => res.json())
+            .then(data => {
+                for (let i = 1; i <= 365; i++) {
+                    const dia = document.createElement("div");
+                    dia.classList.add("dia");
+                    if (localStorage.getItem("dia-" + i) === "completado") {
+                        dia.classList.add("completado");
+                    }
+                    dia.innerText = i;
+                    dia.addEventListener("click", () => {
+                        modalDia.innerText = "Día " + i;
+                        modalVersiculo.innerText = "📜 Versículo: " + data[i - 1].versiculo;
+                        modalDisciplina.innerText = "🔰 Disciplina: " + data[i - 1].disciplina;
+                        modal.style.display = "block";
+
+                        if (dia.classList.contains("completado")) {
+                            dia.classList.remove("completado");
+                            localStorage.removeItem("dia-" + i);
+                        } else {
+                            dia.classList.add("completado");
+                            localStorage.setItem("dia-" + i, "completado");
+                        }
+                    });
+                    calendario.appendChild(dia);
+                }
+            });
+
+        closeBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+
+        window.onclick = (e) => {
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        // Crear botones semanas madre
+        const semanasContainer = document.getElementById("semanas");
+        for (let i = 1; i <= 40; i++) {
+            const boton = document.createElement("button");
+            boton.innerText = "Semana " + i;
+            boton.style.padding = "15px";
+            boton.style.borderRadius = "10px";
+            boton.style.border = "1px solid #ccc";
+            boton.style.backgroundColor = "#f9f9f9";
+            boton.style.cursor = "pointer";
+            boton.style.fontWeight = "bold";
+            boton.addEventListener("click", () => {
+                abrirModalSemana(i);
+            });
+            semanasContainer.appendChild(boton);
+        }
+
+        // Navegación menú
+        document.querySelectorAll(".nav-links a").forEach(link => {
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                const seccionId = link.getAttribute("data-seccion");
+                document.querySelectorAll(".main > div").forEach(div => {
+                    div.style.display = "none";
+                });
+                const seccion = document.getElementById(seccionId);
+                if (seccion) {
+                    if (seccionId === "u-biblica") {
+                        seccion.style.display = "flex";
+                    } else {
+                        seccion.style.display = "block";
+                    }
+                }
+            });
+        });
+    });
+
+    function abrirModalSemana(semana) {
+        const modal = document.getElementById("modal-semana");
+        const titulo = document.getElementById("titulo-semana");
+        const contenido = document.getElementById("contenido-pdf");
+
+        titulo.innerText = "Semana " + semana;
+        contenido.innerHTML = '<p style="color: #999;">Aquí irá el PDF de muestra de esta semana.</p>';
+
+        modal.style.display = "block";
+
+        document.querySelector(".close-semana").onclick = () => {
+            modal.style.display = "none";
+        };
+
+        window.onclick = (e) => {
+            if (e.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+    }
+    </script>
+</body>
+</html>
