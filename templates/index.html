@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Berakah Emeth - Plataforma</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             margin: 0;
@@ -178,6 +179,45 @@
                 opacity: 1;
             }
         }
+
+        /* Ajuste especial para celulares */
+        @media (max-width: 768px) {
+        .topbar img.logo {
+            height: 120px;
+            }
+        .topbar img.centro {
+            height: 100px;
+            margin-left: -60px;
+            }
+        .topbar img.portada {
+            height: 120px;
+            margin-left: -20px;
+            }
+
+        .nav-links {
+            flex-wrap: wrap;
+            gap: 10px;
+            }
+
+        .nav-links a {
+            padding: 8px 12px;
+            font-size: 14px;
+            }
+
+        .sidebar {
+            width: 100%;
+            border-right: none;
+            border-bottom: 1px solid #ddd;
+            }
+
+        .main {
+            flex-direction: column;
+            }
+
+        .content {
+            padding: 15px;
+            }
+        }   
     </style>
 </head>
 <body>
@@ -193,6 +233,7 @@
 
     <!-- Navegación -->
     <div class="nav-links">
+        <a href="#" data-seccion="inicio">Inicio</a>
         <a href="#" data-seccion="u-biblica">U Bíblica</a>
         <a href="#" data-seccion="testimonios">Testimonios</a>
         <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
@@ -201,6 +242,12 @@
 
     <!-- Main -->
     <div class="main">
+        <!-- Panel Inicio -->
+        <div id="inicio" style="display: block; width: 100%; padding: 30px;">
+                <h2>Bienvenido a Berakah Emeth</h2>
+                <p style="color: #555;">Una plataforma para formarte en la Palabra de Dios. Explora nuestras secciones y crece en tu fe día a día.</p>
+        </div>
+
         <div id="u-biblica" style="display: flex; width: 100%; flex-direction: row;">
             <div class="sidebar">
                 <h2>📚 Secciones</h2>
@@ -273,6 +320,18 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+        // Oculta todas las secciones
+        document.querySelectorAll(".main > div").forEach(div => {
+        div.style.display = "none";
+    });
+
+        // Muestra solo la sección de inicio al cargar
+        const inicio = document.getElementById("inicio");
+        if (inicio) {
+        inicio.style.display = "block";
+        
+        }
+
         // Crear botones calendario
         const calendario = document.getElementById("calendario");
         const modal = document.getElementById("modal");
