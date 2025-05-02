@@ -187,67 +187,44 @@
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                margin-bottom: 0;
             }
 
             .logo-container {
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-                gap: 20px;
-            }
-
-            .logo-container img.logo {
-                height: auto;
-                max-height: 120px;
-                width: auto;
-            }
-
-            .logo-container .texto-berakah {
-                display: flex;
                 flex-direction: column;
-                align-items: start;
-                text-align: left;
+                align-items: center;
+                gap: 10px;
             }
 
-            .logo-container .texto-berakah h1 {
-                font-size: 28px;
-                margin: 0;
+            .logo-container img {
+                max-width: 90%;
+                height: auto;
+                margin: 0 !important;
             }
-
-            }
-
-            /* Oculta la imagen del versículo (portada.gif) solo en celular */
-            .logo-container img.portada {
-                display: none;
-            }
-
+            
             .nav-links {
                 flex-wrap: wrap;
                 gap: 10px;
-                margin-top: 0;
             }
 
             .nav-links a {
-                padding: 8px 12px;
-                font-size: 14px;
+            padding: 8px 12px;
+            font-size: 14px;
             }
 
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #ddd;
+        .sidebar {
+            width: 100%;
+            border-right: none;
+            border-bottom: 1px solid #ddd;
             }
 
-            .main {
-                flex-direction: column;
+        .main {
+            flex-direction: column;
             }
 
-            .content {
-                padding: 15px;
+        .content {
+            padding: 15px;
             }
-        }       
- 
+        }   
     </style>
 </head>
 <body>
@@ -255,11 +232,9 @@
     <!-- Topbar -->
     <div class="topbar">
         <div class="logo-container">
-            <img src="/static/logo.gif" alt="Cruz" class="logo">
-            <div class="texto-berakah">
-                <h1>BERAKÁH</h1>
-                <h1>EMETH</h1>
-            </div>
+            <img src="/static/logo.gif" alt="Logo" class="logo">
+            <img src="/static/centro.gif" alt="Centro" class="centro">
+            <img src="/static/portada.gif" alt="Verso" class="portada">
         </div>
     </div>
 
