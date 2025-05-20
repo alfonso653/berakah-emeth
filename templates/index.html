@@ -296,7 +296,45 @@
                 transform: translate(-50%, -50%) scale(1);
             }
         }
-        
+
+        .hamburguesa {
+            cursor: pointer;
+            font-size: 22px;
+            padding: 8px 12px;
+            background-color: #ddd;
+            border-radius: 8px;
+            transition: background 0.3s;
+            margin-left: 10px;
+        }
+
+        .hamburguesa:hover {
+            background-color: #ccc;
+        }
+
+        .menu-oculto {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 80px;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 12px;
+            border-radius: 10px;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-oculto a {
+            display: block;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            padding: 6px 0;
+        }
+
+        .mostrar {
+            display: block !important;
+        }
     </style>
 </head>
 
@@ -313,11 +351,16 @@
 
     <!-- Navegación -->
     <div class="nav-links">
-        <a href="javascript:void(0)" data-seccion="inicio">Inicio</a>
+        <a href="#" data-seccion="inicio">Inicio</a>
         <a href="#" data-seccion="u-biblica">U Bíblica</a>
         <a href="#" data-seccion="testimonios">Testimonios</a>
         <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
         <a href="#" data-seccion="madre">40 formas de ser madre</a>
+
+        <div class="hamburguesa" onclick="toggleMenu()">☰</div>
+        <div class="menu-oculto" id="menuOculto">
+            <a href="/logout">Cerrar sesión</a>
+        </div>
     </div>
 
     <!-- Main -->
@@ -545,6 +588,12 @@
                     modal.style.display = "none";
                 }
             };
+        }
+    </script>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("menuOculto");
+            menu.classList.toggle("mostrar");
         }
     </script>
 </body>

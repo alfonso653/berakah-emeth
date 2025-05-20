@@ -1,68 +1,35 @@
-from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from models import db, Usuario
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'clave-secreta-muy-segura'
+
+db.init_app(app)
 
 # Diccionario con las secciones y sus clases
 secciones = {
     "Doctrinas": [
-        {
-            "titulo": "Clase 1: La Revelación de Dios",
-            "slug": "revelacion-de-dios",
-            "video_url": "https://www.youtube.com/embed/MDlvQqrYSvs"
-        },
-        {
-            "titulo": "Clase 2: La Imagen de Dios",
-            "slug": "imagen-de-dios",
-            "video_url": "https://www.youtube.com/embed/c2pA4-G2z_o"
-        }
+        {"titulo": "Clase 1: La Revelación de Dios", "slug": "revelacion-de-dios", "video_url": "https://www.youtube.com/embed/MDlvQqrYSvs"},
+        {"titulo": "Clase 2: La Imagen de Dios", "slug": "imagen-de-dios", "video_url": "https://www.youtube.com/embed/c2pA4-G2z_o"}
     ],
     "Carácter": [
-        {
-            "titulo": "Clase 1: El fruto del Espíritu",
-            "slug": "fruto-del-espiritu",
-            "video_url": "https://www.youtube.com/embed/qwerty5678"
-        },
-        {
-            "titulo": "Clase 2: Humildad en acción",
-            "slug": "humildad",
-            "video_url": "https://www.youtube.com/embed/qazwsx1234"
-        }
+        {"titulo": "Clase 1: El fruto del Espíritu", "slug": "fruto-del-espiritu", "video_url": "https://www.youtube.com/embed/qwerty5678"},
+        {"titulo": "Clase 2: Humildad en acción", "slug": "humildad", "video_url": "https://www.youtube.com/embed/qazwsx1234"}
     ],
     "Oración": [
-        {
-            "titulo": "Clase 1: Cómo oraba Jesús",
-            "slug": "como-oraba-jesus",
-            "video_url": "https://www.youtube.com/embed/oracion1"
-        },
-        {
-            "titulo": "Clase 2: Intercesión efectiva",
-            "slug": "intercesion-efectiva",
-            "video_url": "https://www.youtube.com/embed/oracion2"
-        }
+        {"titulo": "Clase 1: Cómo oraba Jesús", "slug": "como-oraba-jesus", "video_url": "https://www.youtube.com/embed/oracion1"},
+        {"titulo": "Clase 2: Intercesión efectiva", "slug": "intercesion-efectiva", "video_url": "https://www.youtube.com/embed/oracion2"}
     ],
     "Sanidad Interior": [
-        {
-            "titulo": "Clase 1: Sanando el corazón herido",
-            "slug": "sanando-corazon-herido",
-            "video_url": "https://www.youtube.com/embed/sanidad1"
-        },
-        {
-            "titulo": "Clase 2: Liberación emocional",
-            "slug": "liberacion-emocional",
-            "video_url": "https://www.youtube.com/embed/sanidad2"
-        }
+        {"titulo": "Clase 1: Sanando el corazón herido", "slug": "sanando-corazon-herido", "video_url": "https://www.youtube.com/embed/sanidad1"},
+        {"titulo": "Clase 2: Liberación emocional", "slug": "liberacion-emocional", "video_url": "https://www.youtube.com/embed/sanidad2"}
     ],
     "Carácter de Dios": [
-        {
-            "titulo": "Clase 1: Dios es amor",
-            "slug": "dios-es-amor",
-            "video_url": "https://www.youtube.com/embed/diosesamor1"
-        },
-        {
-            "titulo": "Clase 2: Dios es justo",
-            "slug": "dios-es-justo",
-            "video_url": "https://www.youtube.com/embed/diosesjusto2"
-        }
+        {"titulo": "Clase 1: Dios es amor", "slug": "dios-es-amor", "video_url": "https://www.youtube.com/embed/diosesamor1"},
+        {"titulo": "Clase 2: Dios es justo", "slug": "dios-es-justo", "video_url": "https://www.youtube.com/embed/diosesjusto2"}
     ]
 }
 
@@ -78,8 +45,52 @@ def clase(slug):
                 return render_template('clase.html', clase=clase)
     return "Clase no encontrada", 404
 
+# Ruta para registro de usuarios
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        email = request.form['email']
+        contraseña = request.form['contraseña']
+
+        existente = Usuario.query.filter_by(email=email).first()
+        if existente:
+            flash('⚠️ El correo ya está registrado.')
+            return redirect(url_for('registro'))
+
+        nuevo_usuario = Usuario(nombre=nombre, email=email)
+        nuevo_usuario.set_password(contraseña)
+
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+
+        flash('✅ Registro exitoso. ¡Ya puedes iniciar sesión!')
+        return redirect(url_for('home'))
+
+    return render_template('registro.html')
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        contraseña = request.form['contraseña']
+
+        usuario = Usuario.query.filter_by(email=email).first()
+        if usuario and usuario.check_password(contraseña):
+            session['usuario_id'] = usuario.id
+            session['usuario_nombre'] = usuario.nombre
+            session['es_admin'] = usuario.es_admin
+            flash('✅ Sesión iniciada con éxito')
+            return redirect(url_for('home'))
+        else:
+            flash('❌ Credenciales incorrectas')
+
+    return render_template('login.html')
+
+# Crear la base de datos si no existe
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
     import os
-    port = int(os.environ.get('PORT', 5000))  # 5000 es valor por defecto local
+    port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
