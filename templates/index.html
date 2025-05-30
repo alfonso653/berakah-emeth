@@ -359,6 +359,14 @@
 
         <div class="hamburguesa" onclick="toggleMenu()">☰</div>
         <div class="menu-oculto" id="menuOculto">
+            <a href="#" onclick="cargarLogin()">Iniciar sesión</a>
+            <a href="/perfil">Perfil</a>
+            <a href="/mis-clases">Mis clases</a>
+            <a href="/certificados">Certificados</a>
+            <a href="/formulario-ayuda">Formulario de ayuda</a>
+            <a href="/notificaciones">Notificaciones</a>
+            <a href="/eventos">Eventos</a>
+            <a href="/podcast">Podcast / Audios</a>
             <a href="/logout">Cerrar sesión</a>
         </div>
     </div>
@@ -398,7 +406,7 @@
             </div>
         </div>
         <div id="u-biblica" style="display: flex; width: 100%; flex-direction: row;">
-            <div class="sidebar">
+            <div class="sidebar" id="sidebar-izquierdo">
                 <h2>📚 Secciones</h2>
                 {% for seccion, clases in secciones.items() %}
                 <strong>{{ seccion }}</strong>
@@ -594,6 +602,24 @@
         function toggleMenu() {
             const menu = document.getElementById("menuOculto");
             menu.classList.toggle("mostrar");
+        }
+        function cargarLogin() {
+            fetch("/login")
+                .then(res => res.text())
+                .then(html => {
+                    // Oculta todas las secciones actuales
+                    document.querySelectorAll(".main > div").forEach(div => {
+                        div.style.display = "none";
+                    });
+
+                    // Muestra el área blanca (contenedor de clases)
+                    const contenedor = document.getElementById("u-biblica");
+                    contenedor.style.display = "flex";
+                    contenedor.style.flexDirection = "column";
+                    // Inserta dentro el formulario
+                    document.getElementById("contenido-clase").innerHTML = html;
+                    document.getElementById("sidebar-izquierdo").style.display = "none";
+                });
         }
     </script>
 </body>

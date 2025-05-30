@@ -1,75 +1,26 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Iniciar Sesión - Berakah Emeth</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .formulario {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 400px;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #444;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #666;
-        }
-        .mensaje {
-            color: red;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            text-decoration: none;
-            color: #555;
-        }
-    </style>
-</head>
-<body>
-    <form class="formulario" method="POST">
-        <h2>Iniciar sesión</h2>
+<div style="max-width: 800px; margin: 40px auto; padding: 30px; border: 1px solid #ddd; border-radius: 12px; background-color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 40px;">
+    <form method="POST" action="/login" style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+        <h2 style="text-align: center; margin-bottom: 20px;">Iniciar sesión</h2>
         {% with mensajes = get_flashed_messages() %}
             {% if mensajes %}
-                <div class="mensaje">{{ mensajes[0] }}</div>
+                <div style="color: red; text-align: center; margin-bottom: 15px;">{{ mensajes[0] }}</div>
             {% endif %}
         {% endwith %}
-        <input type="email" name="email" placeholder="Correo electrónico" required>
-        <input type="password" name="contraseña" placeholder="Contraseña" required>
-        <button type="submit">Ingresar</button>
-        <a href="/registro">¿No tienes cuenta? Regístrate</a>
+        
+        <input type="email" name="email" placeholder="Correo electrónico" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;" required>
+        <input type="password" name="contraseña" placeholder="Contraseña" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;" required>
+        
+        <div style="width: 100%; margin-bottom: 15px; text-align: left;">
+            <input type="checkbox" id="recordar" name="recordar">
+            <label for="recordar" style="margin-left: 5px;">Recordar mis datos</label>
+        </div>
+        
+        <button type="submit" style="width: 100%; padding: 10px; background: #444; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Ingresar</button>
     </form>
-</body>
-</html>
+
+    <div style="flex: 1; font-size: 14px; color: #555;">
+        <p>¿Es un nuevo usuario? <a href="/registro" style="color: #007BFF;">Registrarse</a></p>
+        <p>¿Ha olvidado su contraseña? <a href="/restablecer" style="color: #007BFF;">Restablecer</a></p>
+        <p>¿Es usted un agente? <a href="#" style="color: #007BFF;">Iniciar sesión aquí</a></p>
+    </div>
+</div>
