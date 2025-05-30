@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_mail import Mail, Message
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:AQUÍ_TU_CONTRASEÑA@postgres.railway.internal:5432/railway'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'clave-secreta-muy-segura'
 # Configuración del correo
