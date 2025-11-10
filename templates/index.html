@@ -4,13 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Berakah Emeth - Plataforma</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
     <style>
         /* VERSIÓN 2.0 - ACTUALIZADA */
+        html {
+            min-width: 320px;
+            overflow-x: hidden;
+        }
+
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -18,27 +23,37 @@
             flex-direction: column;
             height: 100vh;
             overflow-x: hidden;
+            min-width: 320px;
+            width: 100%;
+            max-width: 100vw;
         }
 
         .topbar {
             background: #ffffff;
             border-bottom: 4px solid #667eea;
-            padding: 40px 60px;
+            padding: 115px 60px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             position: relative;
+            overflow: hidden;
         }
 
         .topbar::before {
             content: '';
             position: absolute;
-            inset: -50%;
-            background: 
-                radial-gradient(circle at 0% 50%, rgba(102, 126, 234, 0.28) 0%, transparent 40%),
-                radial-gradient(circle at 100% 50%, rgba(118, 75, 162, 0.28) 0%, transparent 40%);
-            animation: olasHorizontal 4s ease-in-out infinite;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(102, 126, 234, 0.20) 0%,
+                rgba(118, 75, 162, 0.15) 25%,
+                rgba(255, 255, 255, 0.45) 50%,
+                rgba(102, 126, 234, 0.15) 75%,
+                rgba(118, 75, 162, 0.20) 100%
+            );
+            background-size: 600% 600%;
+            animation: auroraDiagonal 8s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
         }
@@ -46,36 +61,30 @@
         .topbar::after {
             content: '';
             position: absolute;
-            inset: -50%;
-            background: 
-                radial-gradient(circle at 50% 0%, rgba(118, 75, 162, 0.25) 0%, transparent 40%),
-                radial-gradient(circle at 50% 100%, rgba(102, 126, 234, 0.25) 0%, transparent 40%);
-            animation: olasVertical 5s ease-in-out infinite;
+            inset: 0;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.35) 0%,
+                rgba(118, 75, 162, 0.12) 30%,
+                rgba(102, 126, 234, 0.15) 50%,
+                rgba(118, 75, 162, 0.12) 70%,
+                rgba(255, 255, 255, 0.35) 100%
+            );
+            background-size: 600% 600%;
+            animation: auroraDiagonal 10s ease-in-out infinite reverse;
             pointer-events: none;
             z-index: 0;
         }
 
-        @keyframes olasHorizontal {
+        @keyframes auroraDiagonal {
             0% {
-                transform: translateX(-20%);
+                background-position: 0% 0%;
             }
             50% {
-                transform: translateX(20%);
+                background-position: 100% 100%;
             }
             100% {
-                transform: translateX(-20%);
-            }
-        }
-
-        @keyframes olasVertical {
-            0% {
-                transform: translateY(-18%);
-            }
-            50% {
-                transform: translateY(18%);
-            }
-            100% {
-                transform: translateY(-18%);
+                background-position: 0% 0%;
             }
         }
 
@@ -125,35 +134,49 @@
         }
 
         .titulo-principal {
-            font-size: 56px;
-            font-weight: 800;
-            letter-spacing: 4px;
-            margin: 0 0 12px 0;
+            font-family: 'Cinzel', serif;
+            font-size: 52px;
+            font-weight: 600;
+            letter-spacing: 6px;
+            margin: 15px 0 12px 0;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #2c2c2c;
+            line-height: 1.2;
+        }
+
+        .ministries {
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 4px;
+            margin: -12px 0 12px 0;
+            color: #2c2c2c;
+            text-transform: uppercase;
+            line-height: 1;
+            text-align: right;
         }
 
         .subtitulo {
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            margin: 0 0 15px 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin: -5px 0 15px 0;
             color: #667eea;
-            text-transform: uppercase;
+            text-transform: capitalize;
         }
 
         .subtitulo em {
+            font-family: 'Cormorant Garamond', serif;
             font-style: italic;
+            font-weight: 300;
             color: #764ba2;
         }
 
         .versiculo {
             font-size: 16px;
             line-height: 1.7;
-            margin: 0;
+            margin: -10px 0 0 0;
             color: #4a5568;
             font-weight: 400;
             max-width: 900px;
@@ -340,7 +363,7 @@
         /* Ajuste especial para celulares */
         @media (max-width: 768px) {
             .topbar {
-                padding: 25px 20px;
+                padding: 180px 20px;
             }
 
             .logo-container {
@@ -368,18 +391,28 @@
                 padding-right: 0;
             }
 
+            .ministries {
+                font-size: 11px !important;
+                letter-spacing: 3px !important;
+                margin: -8px 0 8px 0 !important;
+                text-align: center !important;
+            }
+
             .titulo-principal {
                 font-size: 32px !important;
-                letter-spacing: 2px;
+                letter-spacing: 2px !important;
+                margin: -10px 0 8px 0 !important;
             }
 
             .subtitulo {
                 font-size: 14px !important;
+                margin: 10px 0 10px 0 !important;
             }
 
             .versiculo {
                 font-size: 13px !important;
                 line-height: 1.6;
+                margin: -8px 0 0 0 !important;
             }
 
             .nav-links {
@@ -524,7 +557,8 @@
             <img src="/static/logo.gif" alt="Logo Berakah Emeth" class="logo">
             <div class="header-text">
                 <h1 class="titulo-principal">BERAKAH EMETH</h1>
-                <p class="subtitulo">HECHOS 2 - <em>"PARÁFRASIS"</em></p>
+                <p class="ministries">MINISTERIO</p>
+                <p class="subtitulo"><em>Hechos 2</em> — <em>Paráfrasis</em></p>
                 <p class="versiculo">Se mantenían firmes en la enseñanza de los apóstoles, en la comunión, en el partimiento del pan y en la oración. Y cada día el Señor añadía al grupo los que iban siendo salvos.</p>
             </div>
         </div>
@@ -532,20 +566,20 @@
 
     <!-- Navegación Sticky Premium -->
     <div class="nav-links">
-        <a href="#" data-seccion="inicio">🏠 Inicio</a>
-        <a href="#" data-seccion="u-biblica">📚 Universidad Bíblica</a>
-        <a href="#" data-seccion="testimonios">💬 Testimonios</a>
-        <a href="#" data-seccion="venciendo-pornografia">🛡️ Venciendo la Pornografía</a>
-        <a href="#" data-seccion="madre">🌸 40 Formas de ser Madre</a>
+        <a href="#" data-seccion="inicio">Inicio</a>
+        <a href="#" data-seccion="u-biblica">Universidad</a>
+        <a href="#" data-seccion="testimonios">Testimonios</a>
+        <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
+        <a href="#" data-seccion="madre">40 Formas de ser Madre</a>
 
         <div class="hamburguesa" onclick="toggleMenu()">☰</div>
         <div class="menu-oculto" id="menuOculto">
-            <a href="#" onclick="cargarLogin()">🔐 Iniciar sesión</a>
-            <a href="/perfil">👤 Perfil</a>
-            <a href="/mis-clases">📖 Mis clases</a>
-            <a href="/certificados">🎓 Certificados</a>
-            <a href="/formulario-ayuda">📝 Formulario de ayuda</a>
-            <a href="/notificaciones">🔔 Notificaciones</a>
+            <a href="#" onclick="cargarLogin()">Iniciar sesión</a>
+            <a href="/perfil">Perfil</a>
+            <a href="/mis-clases">Mis clases</a>
+            <a href="/certificados">Certificados</a>
+            <a href="/formulario-ayuda">Formulario de ayuda</a>
+            <a href="/notificaciones">Notificaciones</a>
             <a href="/eventos">Eventos</a>
             <a href="/podcast">Podcast / Audios</a>
             <a href="/logout">Cerrar sesión</a>
@@ -588,7 +622,7 @@
         </div>
         <div id="u-biblica" style="display: flex; width: 100%; flex-direction: row;">
             <div class="sidebar" id="sidebar-izquierdo">
-                <h2>📚 Secciones</h2>
+                <h2>Secciones</h2>
                 {% for seccion, clases in secciones.items() %}
                 <strong>{{ seccion }}</strong>
                 {% for clase in clases %}
