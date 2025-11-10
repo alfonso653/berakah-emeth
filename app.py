@@ -4,7 +4,12 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_mail import Mail, Message
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:uoLTdxMcdpriiVvMsplZQDpWdEUIrVTB@postgres.railway.internal:5432/railway'
+# Usar SQLite para desarrollo local, PostgreSQL para producción
+import os
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:uoLTdxMcdpriiVvMsplZQDpWdEUIrVTB@postgres.railway.internal:5432/railway'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///berakah.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'clave-secreta-muy-segura'
 # Configuración del correo
@@ -151,7 +156,8 @@ import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    # Modo debug activado para desarrollo ágil y profesional
+    app.run(host='0.0.0.0', port=port, debug=True)
 
 
 

@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <title>Berakah Emeth - Plataforma</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <style>
+        /* VERSIÓN 2.0 - ACTUALIZADA */
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -17,86 +21,208 @@
         }
 
         .topbar {
-            background-color: #ffffff;
-            border-bottom: 1px solid #ccc;
-            padding: 10px 20px;
+            background: #ffffff;
+            border-bottom: 4px solid #667eea;
+            padding: 40px 60px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .topbar::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: 
+                radial-gradient(circle at 0% 50%, rgba(102, 126, 234, 0.28) 0%, transparent 40%),
+                radial-gradient(circle at 100% 50%, rgba(118, 75, 162, 0.28) 0%, transparent 40%);
+            animation: olasHorizontal 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .topbar::after {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: 
+                radial-gradient(circle at 50% 0%, rgba(118, 75, 162, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 50% 100%, rgba(102, 126, 234, 0.25) 0%, transparent 40%);
+            animation: olasVertical 5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes olasHorizontal {
+            0% {
+                transform: translateX(-20%);
+            }
+            50% {
+                transform: translateX(20%);
+            }
+            100% {
+                transform: translateX(-20%);
+            }
+        }
+
+        @keyframes olasVertical {
+            0% {
+                transform: translateY(-18%);
+            }
+            50% {
+                transform: translateY(18%);
+            }
+            100% {
+                transform: translateY(-18%);
+            }
         }
 
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: flex-start;
+            gap: 40px;
+            max-width: 100%;
+            width: 100%;
+            position: relative;
+            z-index: 1;
         }
 
         .logo-container img.logo {
-            height: 200px;
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            padding: 0;
+            margin: 15px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            display: block;
+            box-shadow: 
+                0 15px 40px rgba(102, 126, 234, 0.3),
+                0 8px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            filter: drop-shadow(0 4px 12px rgba(102, 126, 234, 0.2));
         }
 
-        .logo-container img.centro {
-            height: 180px;
-            margin-left: -120px;
-            border-radius: 12px;
+        .logo-container img.logo:hover {
+            transform: translateY(-10px) scale(1.04);
+            box-shadow: 
+                0 25px 50px rgba(102, 126, 234, 0.4),
+                0 12px 25px rgba(0, 0, 0, 0.2);
+            filter: drop-shadow(0 6px 16px rgba(102, 126, 234, 0.3));
         }
 
-        .logo-container img.portada {
-            height: 200px;
-            margin-left: -40px;
-            border-radius: 12px;
+        .header-text {
+            flex: 1;
+            color: #2d3748;
+            text-align: left;
+            padding-right: 40px;
         }
 
+        .titulo-principal {
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitulo {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin: 0 0 15px 0;
+            color: #667eea;
+            text-transform: uppercase;
+        }
+
+        .subtitulo em {
+            font-style: italic;
+            color: #764ba2;
+        }
+
+        .versiculo {
+            font-size: 16px;
+            line-height: 1.7;
+            margin: 0;
+            color: #4a5568;
+            font-weight: 400;
+            max-width: 900px;
+            font-style: italic;
+        }
+
+        /* MENÚ STICKY PREMIUM CON GLASSMORPHISM */
         .nav-links {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             display: flex;
             justify-content: center;
-            gap: 20px;
-            padding: 10px;
-            background-color: #f0f0f0;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 30px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-links.scrolled {
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
         }
 
         .nav-links a {
             text-decoration: none;
-            color: #000;
-            font-weight: bold;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            display: inline-block;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             position: relative;
-            /* NECESARIO para el subrayado */
+            background: transparent;
+            letter-spacing: 0.3px;
         }
 
-        .nav-links a::after {
+        .nav-links a::before {
             content: '';
             position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 2px;
-            background-color: #444;
-            /* Color del subrayado */
-            transition: width 0.3s ease;
-            border-radius: 2px;
+            inset: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
         }
 
         .nav-links a:hover {
-            background-color: #f0f0f0;
-            color: #444;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            /* Sombrita elegante */
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
         }
 
-        .nav-links a:hover::after {
-            width: 100%;
+        .nav-links a:hover::before {
+            opacity: 1;
         }
 
-        .nav-links a:hover {
-            color: #444;
-            /* Gris sutil al pasar el mouse */
-            top: -2px;
-            /* Se levanta un poquito */
+        .nav-links a:active {
+            transform: translateY(0);
         }
 
         .main {
@@ -214,21 +340,46 @@
         /* Ajuste especial para celulares */
         @media (max-width: 768px) {
             .topbar {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
+                padding: 25px 20px;
             }
 
             .logo-container {
                 flex-direction: column;
-                align-items: center;
-                gap: 10px;
+                gap: 20px;
+                text-align: center;
             }
 
-            .logo-container img {
-                max-width: 90%;
-                height: auto;
-                margin: 0 !important;
+            .logo-container img.logo {
+                width: 120px !important;
+                height: 120px !important;
+                margin: 10px !important;
+                box-shadow: 
+                    0 12px 35px rgba(102, 126, 234, 0.25),
+                    0 6px 15px rgba(0, 0, 0, 0.12) !important;
+                border-radius: 15px !important;
+            }
+
+            .logo-container img.logo:hover {
+                transform: translateY(-5px) scale(1.02) !important;
+            }
+
+            .header-text {
+                text-align: center;
+                padding-right: 0;
+            }
+
+            .titulo-principal {
+                font-size: 32px !important;
+                letter-spacing: 2px;
+            }
+
+            .subtitulo {
+                font-size: 14px !important;
+            }
+
+            .versiculo {
+                font-size: 13px !important;
+                line-height: 1.6;
             }
 
             .nav-links {
@@ -299,37 +450,64 @@
 
         .hamburguesa {
             cursor: pointer;
-            font-size: 22px;
-            padding: 8px 12px;
-            background-color: #ddd;
-            border-radius: 8px;
-            transition: background 0.3s;
-            margin-left: 10px;
+            font-size: 24px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
         .hamburguesa:hover {
-            background-color: #ccc;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
 
         .menu-oculto {
             display: none;
             position: absolute;
             right: 20px;
-            top: 80px;
-            background-color: white;
-            border: 1px solid #ccc;
-            padding: 12px;
-            border-radius: 10px;
-            z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            top: 75px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 16px;
+            border-radius: 16px;
+            z-index: 1001;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            min-width: 220px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .menu-oculto a {
             display: block;
             text-decoration: none;
-            color: #000;
-            font-weight: bold;
-            padding: 6px 0;
+            color: #2d3748;
+            font-weight: 600;
+            padding: 12px 16px;
+            margin: 4px 0;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-oculto a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateX(5px);
         }
 
         .mostrar {
@@ -340,31 +518,34 @@
 
 <body>
 
-    <!-- Topbar -->
+    <!-- Topbar Premium -->
     <div class="topbar">
         <div class="logo-container">
-            <img src="/static/logo.gif" alt="Logo" class="logo">
-            <img src="/static/centro.gif" alt="Centro" class="centro">
-            <img src="/static/portada.gif" alt="Verso" class="portada">
+            <img src="/static/logo.gif" alt="Logo Berakah Emeth" class="logo">
+            <div class="header-text">
+                <h1 class="titulo-principal">BERAKAH EMETH</h1>
+                <p class="subtitulo">HECHOS 2 - <em>"PARÁFRASIS"</em></p>
+                <p class="versiculo">Se mantenían firmes en la enseñanza de los apóstoles, en la comunión, en el partimiento del pan y en la oración. Y cada día el Señor añadía al grupo los que iban siendo salvos.</p>
+            </div>
         </div>
     </div>
 
-    <!-- Navegación -->
+    <!-- Navegación Sticky Premium -->
     <div class="nav-links">
-        <a href="#" data-seccion="inicio">Inicio</a>
-        <a href="#" data-seccion="u-biblica">U Bíblica</a>
-        <a href="#" data-seccion="testimonios">Testimonios</a>
-        <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
-        <a href="#" data-seccion="madre">40 formas de ser madre</a>
+        <a href="#" data-seccion="inicio">🏠 Inicio</a>
+        <a href="#" data-seccion="u-biblica">📚 Universidad Bíblica</a>
+        <a href="#" data-seccion="testimonios">💬 Testimonios</a>
+        <a href="#" data-seccion="venciendo-pornografia">🛡️ Venciendo la Pornografía</a>
+        <a href="#" data-seccion="madre">🌸 40 Formas de ser Madre</a>
 
         <div class="hamburguesa" onclick="toggleMenu()">☰</div>
         <div class="menu-oculto" id="menuOculto">
-            <a href="#" onclick="cargarLogin()">Iniciar sesión</a>
-            <a href="/perfil">Perfil</a>
-            <a href="/mis-clases">Mis clases</a>
-            <a href="/certificados">Certificados</a>
-            <a href="/formulario-ayuda">Formulario de ayuda</a>
-            <a href="/notificaciones">Notificaciones</a>
+            <a href="#" onclick="cargarLogin()">🔐 Iniciar sesión</a>
+            <a href="/perfil">👤 Perfil</a>
+            <a href="/mis-clases">📖 Mis clases</a>
+            <a href="/certificados">🎓 Certificados</a>
+            <a href="/formulario-ayuda">📝 Formulario de ayuda</a>
+            <a href="/notificaciones">🔔 Notificaciones</a>
             <a href="/eventos">Eventos</a>
             <a href="/podcast">Podcast / Audios</a>
             <a href="/logout">Cerrar sesión</a>
@@ -597,6 +778,16 @@
                 }
             };
         }
+
+        // Efecto sticky premium para el menú
+        window.addEventListener('scroll', function() {
+            const navLinks = document.querySelector('.nav-links');
+            if (window.scrollY > 50) {
+                navLinks.classList.add('scrolled');
+            } else {
+                navLinks.classList.remove('scrolled');
+            }
+        });
     </script>
     <script>
         function toggleMenu() {
