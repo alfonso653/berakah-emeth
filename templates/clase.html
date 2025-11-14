@@ -25,4 +25,155 @@
             Después de ver la clase, comparte con alguien lo que aprendiste. La Palabra se multiplica cuando la vivimos y la compartimos con otros.
         </p>
     </div>
+
+    <!-- Botón para marcar clase como completada -->
+    <div style="margin-top: 30px; text-align: center;">
+        <button id="btnCompletarClase" 
+                data-curso="{{ curso_slug }}" 
+                data-clase="{{ clase.slug }}"
+                style="padding: 15px 40px; font-size: 16px; font-family: 'Poppins', sans-serif; font-weight: 600; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px;">
+            <span id="btnTexto">✅ Marcar como completada</span>
+        </button>
+    </div>
 </div>
+
+<script>
+console.log('🎬 Script de clase.html cargado');
+function completarClase() {
+    console.log('🔹 Función completarClase llamada');
+    const btn = document.getElementById('btnCompletarClase');
+    const btnTexto = document.getElementById('btnTexto');
+    
+    if (!btn) {
+        console.error('❌ Botón no encontrado');
+        alert('❌ Error: Botón no encontrado');
+        return;
+    }
+    
+    const cursoSlug = btn.getAttribute('data-curso');
+    const claseSlug = btn.getAttribute('data-clase');
+    
+    console.log('📦 Datos:', { cursoSlug, claseSlug });
+    
+    if (!cursoSlug || !claseSlug) {
+        console.error('❌ Faltan datos del curso o clase');
+        alert('❌ Error: Faltan datos del curso o clase');
+        return;
+    }
+    
+    // Cambiar estado del botón
+    btn.disabled = true;
+    btnTexto.textContent = '⏳ Guardando...';
+    
+    console.log('🚀 Enviando petición a API...');
+    
+    fetch('/api/completar-clase', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            curso_slug: cursoSlug,
+            clase_slug: claseSlug
+        })
+    })
+    .then(response => {
+        console.log('📥 Respuesta recibida:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('📊 Datos recibidos:', data);
+        if (data.success) {
+            btnTexto.textContent = '✅ Completada';
+            btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+            
+            // Mostrar mensaje de éxito
+            alert(data.message + '\n\n📊 Progreso: ' + data.clases_completadas + '/' + data.total_clases + ' clases (' + data.porcentaje + '%)');
+            
+            // Actualizar el sidebar si existe
+            actualizarSidebar(cursoSlug);
+        } else {
+            alert('❌ ' + data.message);
+            btn.disabled = false;
+            btnTexto.textContent = '✅ Marcar como completada';
+        }
+    })
+    .catch(error => {
+        console.error('💥 Error completo:', error);
+        alert('❌ Error al completar la clase: ' + error.message);
+        btn.disabled = false;
+        btnTexto.textContent = '✅ Marcar como completada';
+    });
+}
+
+function actualizarSidebar(cursoSlug) {
+    // Recargar progreso del curso
+    fetch('/api/progreso/' + cursoSlug)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Actualizar checkmarks en el sidebar
+                data.clases_completadas.forEach(claseSlug => {
+                    const enlaceClase = document.querySelector(`a[href*="${claseSlug}"]`);
+                    if (enlaceClase && !enlaceClase.textContent.includes('✅')) {
+                        enlaceClase.textContent = '✅ ' + enlaceClase.textContent.replace('⬜ ', '');
+                    }
+                });
+            }
+        });
+}
+
+// Al cargar la página, verificar si ya está completada y agregar event listener
+(function() {
+    console.log('🔧 Inicializando evento del botón...');
+    
+    // Esperar un momento para asegurar que el DOM esté listo
+    setTimeout(function() {
+        const btn = document.getElementById('btnCompletarClase');
+        
+        if (!btn) {
+            console.error('❌ Botón btnCompletarClase no encontrado');
+            return;
+        }
+        
+        console.log('✅ Botón encontrado, agregando event listener');
+        
+        // Agregar event listener al botón
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🖱️ Click en el botón detectado');
+            completarClase();
+        });
+        
+        const cursoSlug = btn.getAttribute('data-curso');
+        const claseSlug = btn.getAttribute('data-clase');
+        
+        console.log('📋 Curso:', cursoSlug, '- Clase:', claseSlug);
+        
+        if (!cursoSlug) {
+            console.error('❌ No se encontró curso_slug');
+            return;
+        }
+        
+        // Verificar si ya está completada
+        fetch('/api/progreso/' + cursoSlug)
+            .then(response => response.json())
+            .then(data => {
+                console.log('📊 Progreso cargado:', data);
+                if (data.success) {
+                    if (data.clases_completadas.includes(claseSlug)) {
+                        const btnTexto = document.getElementById('btnTexto');
+                        btnTexto.textContent = '✅ Completada';
+                        btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+                        btn.disabled = true;
+                        console.log('✅ Clase ya estaba completada');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('💥 Error al cargar progreso:', error);
+            });
+    }, 100);
+})();
+</script>
+

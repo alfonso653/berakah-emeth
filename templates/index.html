@@ -46,11 +46,11 @@
             inset: 0;
             background: linear-gradient(
                 135deg,
-                rgba(102, 126, 234, 0.20) 0%,
-                rgba(118, 75, 162, 0.15) 25%,
-                rgba(255, 255, 255, 0.45) 50%,
-                rgba(102, 126, 234, 0.15) 75%,
-                rgba(118, 75, 162, 0.20) 100%
+                rgba(102, 126, 234, 0.25) 0%,
+                rgba(118, 75, 162, 0.20) 25%,
+                rgba(255, 255, 255, 0.50) 50%,
+                rgba(102, 126, 234, 0.20) 75%,
+                rgba(118, 75, 162, 0.25) 100%
             );
             background-size: 600% 600%;
             animation: auroraDiagonal 8s ease-in-out infinite;
@@ -64,11 +64,11 @@
             inset: 0;
             background: linear-gradient(
                 45deg,
-                rgba(255, 255, 255, 0.35) 0%,
-                rgba(118, 75, 162, 0.12) 30%,
-                rgba(102, 126, 234, 0.15) 50%,
-                rgba(118, 75, 162, 0.12) 70%,
-                rgba(255, 255, 255, 0.35) 100%
+                rgba(255, 255, 255, 0.40) 0%,
+                rgba(118, 75, 162, 0.15) 30%,
+                rgba(102, 126, 234, 0.18) 50%,
+                rgba(118, 75, 162, 0.15) 70%,
+                rgba(255, 255, 255, 0.40) 100%
             );
             background-size: 600% 600%;
             animation: auroraDiagonal 10s ease-in-out infinite reverse;
@@ -441,20 +441,310 @@
         }
 
         .info-iglesia {
-            position: absolute;
-            top: 60%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 18px;
-            font-size: 14px;
-            max-width: 320px;
-            text-align: left;
-            animation: fadeInScale 1.2s ease-out;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 40px;
             z-index: 2;
+        }
+
+        .card-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px 25px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 1s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-info:hover {
+            background: rgba(102, 126, 234, 0.8);
+            backdrop-filter: blur(15px);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+            min-height: 350px;
+        }
+
+        .card-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+            transition: all 1s ease-in-out;
+        }
+
+        .card-content {
+            font-size: 16px;
+            color: white;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 1s ease-in-out;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .card-info:hover .card-content {
+            opacity: 1;
+            max-height: 500px;
+        }
+
+        .card-info:hover .card-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-servidores {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 20px;
+        }
+
+        .card-servidores h2 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .servidores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .servidor-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .servidor-foto {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .servidor-nombre {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .servidor-cargo {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        /* Estilos para el carrusel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-slide {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .carousel-slide.active {
+            display: block;
+        }
+
+        .carousel-slide h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .carousel-slide p {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .carousel-slide .verse {
+            font-size: 12px;
+            font-style: italic;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
+
+        .carousel-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            align-items: center;
+        }
+
+        .carousel-arrow {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            font-size: 20px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .carousel-arrow:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 150px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .carousel-dot.active {
+            background: rgba(255, 255, 255, 0.9);
+            width: 10px;
+            height: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (min-width: 769px) {
+            #card-creemos .carousel-slide p {
+                font-size: 13px;
+                line-height: 1.4;
+                max-width: 100%;
+            }
+            
+            #card-creemos .carousel-slide h4 {
+                font-size: 17px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .card-info {
+                min-height: 150px;
+                padding: 20px 15px;
+                font-size: 14px;
+            }
+            
+            .card-info:hover {
+                min-height: 420px;
+            }
+            
+            .card-title {
+                font-size: 18px !important;
+            }
+            
+            .card-content {
+                font-size: 11px;
+            }
+            
+            .card-content p {
+                font-size: 10px;
+                line-height: 1.4;
+                margin-bottom: 8px !important;
+            }
+            
+            .card-content strong {
+                font-size: 11px;
+            }
+            
+            .card-content a {
+                font-size: 11px !important;
+                padding: 6px 12px !important;
+                margin-top: 6px !important;
+            }
+            
+            /* En qué creemos centrada entre las dos columnas */
+            #card-creemos {
+                grid-column: 1 / -1;
+                max-width: calc(50% - 6px);
+                margin: 0 auto;
+            }
+
+            .card-servidores {
+                padding: 30px 20px;
+                grid-column: 1 / -1;
+            }
+            
+            /* Tarjetas extras: 1 y 3 en columnas, 2 centrada debajo */
+            #card-extra3 {
+                grid-column: 1 / -1;
+                max-width: calc(50% - 6px);
+                margin: 0 auto;
+            }
+
+            .servidores-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
         }
 
         @keyframes slideInRight {
@@ -546,6 +836,45 @@
         .mostrar {
             display: block !important;
         }
+
+        /* Cross Fade Animation para secciones */
+        .main > div {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .main > div.fade-out {
+            opacity: 0;
+        }
+
+        .main > div.fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .flash-message {
+            animation: slideInRight 0.5s ease-out;
+        }
     </style>
 </head>
 
@@ -562,6 +891,7 @@
                 <p class="versiculo">Se mantenían firmes en la enseñanza de los apóstoles, en la comunión, en el partimiento del pan y en la oración. Y cada día el Señor añadía al grupo los que iban siendo salvos.</p>
             </div>
         </div>
+        
     </div>
 
     <!-- Navegación Sticky Premium -->
@@ -574,49 +904,235 @@
 
         <div class="hamburguesa" onclick="toggleMenu()">☰</div>
         <div class="menu-oculto" id="menuOculto">
-            <a href="#" onclick="cargarLogin()">Iniciar sesión</a>
-            <a href="/perfil">Perfil</a>
-            <a href="/mis-clases">Mis clases</a>
-            <a href="/certificados">Certificados</a>
-            <a href="/formulario-ayuda">Formulario de ayuda</a>
-            <a href="/notificaciones">Notificaciones</a>
-            <a href="/eventos">Eventos</a>
-            <a href="/podcast">Podcast / Audios</a>
-            <a href="/logout">Cerrar sesión</a>
+            {% if usuario %}
+                <!-- Perfil del usuario en el menú -->
+                <div style="padding: 20px 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%); border-radius: 12px; margin-bottom: 12px; border: 2px solid rgba(102, 126, 234, 0.2);">
+                    <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 16px; color: #667eea; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 24px;">👤</span> {{ usuario.nombre }}
+                    </p>
+                    <p style="margin: 6px 0 0 32px; font-family: 'Poppins', sans-serif; font-size: 12px; color: #666; word-break: break-all;">
+                        {{ usuario.email }}
+                    </p>
+                </div>
+                
+                <!-- Opciones para usuarios logueados -->
+                <a href="#" data-seccion="perfil">👤 Perfil</a>
+                <a href="/mis-clases">📚 Mis clases</a>
+                <a href="/certificados">🎓 Certificados</a>
+                <a href="/formulario-ayuda">📝 Formulario de ayuda</a>
+                <a href="/notificaciones">🔔 Notificaciones</a>
+                <a href="/eventos">📅 Eventos</a>
+                <a href="/podcast">🎧 Podcast / Audios</a>
+                <a href="/logout" onclick="return confirmarCierreSesion(event)">🚪 Cerrar sesión</a>
+            {% else %}
+                <!-- Opciones para usuarios no logueados -->
+                <a href="#" onclick="cargarLogin()">🔑 Iniciar sesión</a>
+                <a href="/registro">📝 Registrarse</a>
+                <a href="/eventos">📅 Eventos</a>
+                <a href="/podcast">🎧 Podcast / Audios</a>
+            {% endif %}
         </div>
     </div>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div id="flash-messages" style="position: fixed; top: 80px; right: 20px; z-index: 9999; max-width: 350px;">
+                {% for message in messages %}
+                <div class="flash-message" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 20px; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); font-family: 'Poppins', sans-serif; font-size: 14px; display: flex; align-items: center; gap: 10px; animation: slideInRight 0.5s ease-out;">
+                    <span>{{ message }}</span>
+                    <button onclick="this.parentElement.remove()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; margin-left: auto;">×</button>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <!-- Main -->
     <div class="main">
         <!-- Panel Inicio -->
-        <div id="inicio" style="display: block; position: relative; width: 100%; height: 100vh; overflow: hidden;">
+        <div id="inicio" style="display: block; position: relative; width: 100%; min-height: 100vh; overflow-y: auto; overflow-x: hidden;">
             <img src="/static/fondo-berakah-inicio.jpg" alt="Inicio"
-                style="position: absolute; width: 100%; height: 100%; object-fit: cover; filter: brightness(50%) sepia(10%); z-index: 0;">
+                style="position: absolute; width: 100%; height: 100%; object-fit: cover; filter: brightness(50%) sepia(10%); z-index: 0; top: 0; left: 0;">
 
             <div
-                style="position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: center; padding: 60px 40px 40px 40px; color: white;">
+                style="position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: center; padding: 60px 40px 80px 40px; color: white;">
                 <h1 style="font-size: 42px; margin-bottom: 20px;">¿Y si no tienes que luchar solo?</h1>
-                <p style="font-size: 18px; max-width: 600px;">
+                <p style="font-size: 18px; max-width: 600px; margin-bottom: 40px;">
                     Sabemos que estás buscando algo más. En Berakah Emeth creemos que no llegaste aquí por casualidad.
                     Este puede ser el inicio de un viaje con propósito... uno que no tienes que hacer solo.
                 </p>
 
-                <!-- Aquí va la caja de información de la iglesia -->
-                <div class="info-iglesia">
-                    <h3>📍 Dirección</h3>
-                    <p>Cll 129 N.104b-21 (Aures 2), Bogotá, Colombia</p>
-                    <h3>📱 WhatsApp</h3>
-                    <p>+57 312 3323171</p>
-                    <h3>✉️ Email</h3>
-                    <p>documentosbiblicos3@gmail.com</p>
-                    <h3>⛪ Reuniones</h3>
-                    <p><strong>Miércoles:</strong> 7:00 PM<br>
-                        <strong>Domingos:</strong> 6:30 AM
-                    </p>
-                    <h3>💻 Virtual</h3>
-                    <p><strong>Oración Mañana:</strong> Lunes a Viernes 5:30 AM<br>
-                        <strong>Jueves:</strong> 7:30 AM Estudio Bíblico
-                    </p>
+                <!-- Tarjetas tipo rompecabezas -->
+                <div class="cards-container">
+                    <!-- Tarjeta Visión -->
+                    <div class="card-info">
+                        <h3 class="card-title">VISIÓN</h3>
+                        <div class="card-content">
+                            <p>Ser una comunidad bíblica que refleje a Cristo, formando discípulos llenos del Espíritu Santo y comprometidos con la verdad, el amor y la santidad.</p>
+                            <p style="margin-top: 15px; font-size: 14px; opacity: 0.9;">📖 Basada en Mateo 28:19-20 y Efesios 4:13.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Misión -->
+                    <div class="card-info">
+                        <h3 class="card-title">MISIÓN</h3>
+                        <div class="card-content">
+                            <p>Predicar el evangelio de Jesucristo, enseñar la Palabra con fidelidad y edificar vidas que vivan en obediencia y esperanza, extendiendo el Reino de Dios en Suba y más allá.</p>
+                            <p style="margin-top: 15px; font-size: 14px; opacity: 0.9;">📖 Basada en 2 Timoteo 4:2 y Romanos 1:16.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta En qué creemos -->
+                    <div class="card-info" id="card-creemos">
+                        <h3 class="card-title">EN QUÉ CREEMOS</h3>
+                        <div class="card-content">
+                            <div class="carousel-container">
+                                <!-- Slide 1 -->
+                                <div class="carousel-slide active">
+                                    <h4>1. La Palabra de Dios</h4>
+                                    <p>Creemos que la Biblia es la Palabra inspirada, inerrante y suficiente de Dios, nuestra única regla infalible de fe y práctica.</p>
+                                    <p class="verse">(2 Timoteo 3:16; 2 Pedro 1:21)</p>
+                                </div>
+                                
+                                <!-- Slide 2 -->
+                                <div class="carousel-slide">
+                                    <h4>2. Dios Trino</h4>
+                                    <p>Creemos en un solo Dios, eterno y verdadero, que existe en tres personas: Padre, Hijo y Espíritu Santo.</p>
+                                    <p class="verse">(Deuteronomio 6:4; Mateo 28:19)</p>
+                                </div>
+                                
+                                <!-- Slide 3 -->
+                                <div class="carousel-slide">
+                                    <h4>3. Jesucristo</h4>
+                                    <p>Creemos que Jesucristo es Dios hecho hombre, concebido por el Espíritu Santo y nacido de una virgen. Vivió sin pecado, murió por nuestros pecados, resucitó corporalmente y volverá con poder y gloria.</p>
+                                    <p class="verse">(Juan 1:1,14; Romanos 1:3-4)</p>
+                                </div>
+                                
+                                <!-- Slide 4 -->
+                                <div class="carousel-slide">
+                                    <h4>4. El Espíritu Santo</h4>
+                                    <p>Creemos que el Espíritu Santo convence de pecado, regenera, mora en el creyente y lo capacita para una vida santa y para el servicio.</p>
+                                    <p class="verse">(Juan 16:8; Gálatas 5:22-23)</p>
+                                </div>
+                                
+                                <!-- Slide 5 -->
+                                <div class="carousel-slide">
+                                    <h4>5. La Salvación</h4>
+                                    <p>Creemos que somos salvos únicamente por gracia, mediante la fe en Jesucristo, no por obras.</p>
+                                    <p class="verse">(Efesios 2:8-9; Tito 3:5)</p>
+                                </div>
+                                
+                                <!-- Slide 6 -->
+                                <div class="carousel-slide">
+                                    <h4>6. La Iglesia</h4>
+                                    <p>Creemos que la Iglesia es el cuerpo de Cristo, compuesta por todos los redimidos. Su misión es adorar a Dios, edificar a los creyentes y proclamar el evangelio a todas las naciones.</p>
+                                    <p class="verse">(Efesios 1:22-23; Mateo 28:19-20)</p>
+                                </div>
+                                
+                                <!-- Slide 7 -->
+                                <div class="carousel-slide">
+                                    <h4>7. La Segunda Venida</h4>
+                                    <p>Creemos que Jesucristo volverá personalmente, para juzgar a vivos y muertos, y establecer su reino eterno de justicia y paz.</p>
+                                    <p class="verse">(Hechos 1:11; Apocalipsis 22:12)</p>
+                                </div>
+                                
+                                <!-- Slide 8 -->
+                                <div class="carousel-slide">
+                                    <h4>8. La Vida Cristiana</h4>
+                                    <p>Creemos que el creyente está llamado a vivir en santidad, amar a Dios sobre todas las cosas y al prójimo como a sí mismo.</p>
+                                    <p class="verse">(1 Pedro 1:15-16; Mateo 22:37-39)</p>
+                                </div>
+                                
+                                <!-- Controles del carrusel -->
+                                <div class="carousel-controls">
+                                    <button class="carousel-arrow" onclick="previousSlide()">‹</button>
+                                    <div class="carousel-dots">
+                                        <span class="carousel-dot active" onclick="goToSlide(0)"></span>
+                                        <span class="carousel-dot" onclick="goToSlide(1)"></span>
+                                        <span class="carousel-dot" onclick="goToSlide(2)"></span>
+                                        <span class="carousel-dot" onclick="goToSlide(3)"></span>
+                                        <span class="carousel-dot" onclick="goToSlide(4)"></span>
+                                        <span class="carousel-dot" onclick="goToSlide(5)"></span>
+                                        <span class="carousel-dot" onclick="goToSlide(6)"></span>
+                                        <span class="carousel-dot" onclick="goToSlide(7)"></span>
+                                    </div>
+                                    <button class="carousel-arrow" onclick="nextSlide()">›</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Servidores -->
+                    <div class="card-servidores">
+                        <h2>SERVIDORES/PROFESORES</h2>
+                        <div class="servidores-grid">
+                            <div class="servidor-item">
+                                <div class="servidor-foto">👨</div>
+                                <div class="servidor-nombre">Alfonso Zamudio</div>
+                                <div class="servidor-cargo">Profesional en Ciencias Bíblicas</div>
+                            </div>
+                            <div class="servidor-item">
+                                <div class="servidor-foto">👩</div>
+                                <div class="servidor-nombre">Jenny Paola Castillo</div>
+                                <div class="servidor-cargo">Ministerio de Mujeres</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nuevas 3 tarjetas -->
+                    <div class="card-info" id="card-extra1">
+                        <h3 class="card-title">📍 CONTACTO</h3>
+                        <div class="card-content">
+                            <p style="margin-bottom: 12px;"><strong>Dirección:</strong><br>Cll 129 N.104b-21 (Aures 2)<br>Bogotá, Colombia</p>
+                            <p style="margin-bottom: 12px;"><strong>WhatsApp:</strong><br>+57 312 3323171</p>
+                            <p style="margin-bottom: 12px; word-break: break-all;"><strong>Email:</strong><br>documentosbiblicos3@gmail.com</p>
+                            <a href="https://maps.google.com/?q=Calle+129+104b-21+Bogotá" target="_blank" 
+                               style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: rgba(255,255,255,0.3); 
+                               border-radius: 8px; color: white; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+                                📍 Cómo llegar
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-info" id="card-extra2">
+                        <h3 class="card-title">🕐 HORARIOS</h3>
+                        <div class="card-content">
+                            <p style="margin-bottom: 15px;"><strong>Reuniones Presenciales:</strong><br>
+                            🗓️ Miércoles: 7:00 PM<br>
+                            🗓️ Domingos: 6:30 AM</p>
+                            <p style="margin-bottom: 15px;"><strong>Reuniones Virtuales:</strong><br>
+                            🌅 Oración Matutina:<br>Lunes a Viernes 5:30 AM<br>
+                            📖 Estudio Bíblico:<br>Jueves 7:30 AM</p>
+                            <a href="https://chat.whatsapp.com/LSmaMJlJsHJ2NcbCu43GJb" target="_blank" 
+                               style="display: block; margin-top: 10px; padding: 8px 16px; background: rgba(37,211,102,0.9); 
+                               border-radius: 8px; color: white; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+                                📲 Únete al Grupo de Estudio
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-info" id="card-extra3">
+                        <h3 class="card-title">📱 REDES SOCIALES</h3>
+                        <div class="card-content">
+                            <p style="margin-bottom: 15px;"><strong>Síguenos y conecta con nosotros:</strong></p>
+                            <a href="https://www.facebook.com/profile.php?id=61552829432553&sk=about" target="_blank" 
+                               style="display: block; margin-bottom: 10px; padding: 8px 16px; background: rgba(59,89,152,0.8); 
+                               border-radius: 8px; color: white; text-decoration: none; font-weight: 600;">
+                                📘 Emeth Berakáh
+                            </a>
+                            <a href="https://www.tiktok.com/@emeth1010" target="_blank" 
+                               style="display: block; margin-bottom: 10px; padding: 8px 16px; background: rgba(0,0,0,0.8); 
+                               border-radius: 8px; color: white; text-decoration: none; font-weight: 600;">
+                                🎵 @emeth1010
+                            </a>
+                            <a href="https://wa.me/573123323171" target="_blank" 
+                               style="display: block; padding: 8px 16px; background: rgba(37,211,102,0.8); 
+                               border-radius: 8px; color: white; text-decoration: none; font-weight: 600;">
+                                💬 WhatsApp 312 3323171
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -624,11 +1140,23 @@
             <div class="sidebar" id="sidebar-izquierdo">
                 <h2>Secciones</h2>
                 {% for seccion, clases in secciones.items() %}
-                <strong>{{ seccion }}</strong>
-                {% for clase in clases %}
-                <a href="#" class="clase-link" onclick="cargarClase('{{ clase.slug }}')">{{ clase.titulo }}</a>
-                {% endfor %}
-                <br>
+                <div data-curso="{{ seccion }}" style="margin-bottom: 20px;">
+                    <strong style="font-size: 16px; color: #667eea;">{{ seccion }}</strong>
+                    
+                    <!-- Barra de progreso del curso -->
+                    <div style="margin: 8px 0 12px 0;">
+                        <div style="background: #e0e0e0; border-radius: 10px; height: 8px; overflow: hidden;">
+                            <div class="progreso-bar-fill" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; transition: width 0.5s ease;"></div>
+                        </div>
+                        <p class="progreso-texto" style="font-size: 11px; color: #999; margin: 4px 0 0 0;">0/{{ clases|length }} clases (0%)</p>
+                    </div>
+                    
+                    {% for clase in clases %}
+                    <a href="#" class="clase-link" data-curso-slug="{{ seccion }}" data-clase-slug="{{ clase.slug }}" onclick="cargarClase('{{ clase.slug }}')">
+                        <span class="check-icon">⬜</span> {{ clase.titulo }}
+                    </a>
+                    {% endfor %}
+                </div>
                 {% endfor %}
             </div>
             <div class="content" id="contenido-clase">
@@ -663,6 +1191,98 @@
             <div id="semanas"
                 style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-top: 20px;"></div>
         </div>
+
+        <!-- Sección de Perfil -->
+        <div id="perfil" style="display: none; width: 100%; padding: 40px 20px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%); min-height: 100vh;">
+            <div style="max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                <!-- Header del perfil -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; text-align: center; color: white;">
+                    <div style="width: 120px; height: 120px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 60px; margin: 0 auto 20px auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+                        👤
+                    </div>
+                    <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 10px;">Mi Perfil</h1>
+                    <p style="font-size: 16px; opacity: 0.9;">Completa tu información para obtener certificados</p>
+                </div>
+
+                <!-- Contenido del perfil -->
+                <div style="padding: 40px;">
+                    <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); padding: 20px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid #667eea;">
+                        <p style="font-size: 14px; color: #666; line-height: 1.6; margin: 0;">📋 <strong>Importante:</strong> Los datos que ingreses aquí serán utilizados para generar tus certificados al completar los cursos. Asegúrate de que toda la información sea correcta.</p>
+                    </div>
+
+                    <form id="formPerfil" style="display: flex; flex-direction: column; gap: 30px;">
+                        <!-- Sección 1: Información Personal -->
+                        <div>
+                            <h2 style="font-size: 20px; color: #667eea; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0;">📝 Información Personal</h2>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">Nombre *</label>
+                                    <input type="text" name="nombre" value="{{ usuario.nombre if usuario else '' }}" required style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">Apellidos *</label>
+                                    <input type="text" name="apellidos" value="{{ usuario.apellidos if usuario and usuario.apellidos else '' }}" required style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                                </div>
+                                <div style="grid-column: 1 / -1; display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">Correo Electrónico</label>
+                                    <input type="email" value="{{ usuario.email if usuario else '' }}" disabled style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif; background: #f5f5f5; cursor: not-allowed;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección 2: Documento -->
+                        <div>
+                            <h2 style="font-size: 20px; color: #667eea; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0;">🆔 Documento de Identidad</h2>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">Tipo de Documento *</label>
+                                    <select name="tipo_documento" required style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                                        <option value="">Seleccione...</option>
+                                        <option value="CC" {% if usuario and usuario.tipo_documento == 'CC' %}selected{% endif %}>Cédula de Ciudadanía</option>
+                                        <option value="TI" {% if usuario and usuario.tipo_documento == 'TI' %}selected{% endif %}>Tarjeta de Identidad</option>
+                                        <option value="CE" {% if usuario and usuario.tipo_documento == 'CE' %}selected{% endif %}>Cédula de Extranjería</option>
+                                        <option value="Pasaporte" {% if usuario and usuario.tipo_documento == 'Pasaporte' %}selected{% endif %}>Pasaporte</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">Número de Documento *</label>
+                                    <input type="text" name="numero_documento" value="{{ usuario.numero_documento if usuario and usuario.numero_documento else '' }}" required style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección 3: Información Adicional -->
+                        <div>
+                            <h2 style="font-size: 20px; color: #667eea; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0;">📅 Información Adicional</h2>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">Fecha de Nacimiento</label>
+                                    <input type="date" name="fecha_nacimiento" value="{{ usuario.fecha_nacimiento if usuario and usuario.fecha_nacimiento else '' }}" style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">Teléfono</label>
+                                    <input type="tel" name="telefono" value="{{ usuario.telefono if usuario and usuario.telefono else '' }}" placeholder="+57 312 3323171" style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">Ciudad *</label>
+                                    <input type="text" name="ciudad" value="{{ usuario.ciudad if usuario and usuario.ciudad else '' }}" required style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                                </div>
+                                <div style="display: flex; flex-direction: column;">
+                                    <label style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 8px;">País *</label>
+                                    <input type="text" name="pais" value="{{ usuario.pais if usuario and usuario.pais else '' }}" required style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div style="display: flex; gap: 15px; margin-top: 10px;">
+                            <button type="submit" style="flex: 1; padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;">💾 Guardar Cambios</button>
+                            <button type="button" onclick="document.querySelector('[data-seccion=inicio]').click()" style="flex: 1; padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #333; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;">🏠 Volver al Inicio</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modales -->
@@ -688,12 +1308,226 @@
 
     <!-- Scripts -->
     <script>
+        // Carrusel de "En qué creemos"
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('#card-creemos .carousel-slide');
+        const dots = document.querySelectorAll('#card-creemos .carousel-dot');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            if (index >= slides.length) currentSlide = 0;
+            if (index < 0) currentSlide = slides.length - 1;
+            
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+        
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+        
+        function previousSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            showSlide(currentSlide);
+        }
+    
         function cargarClase(slug) {
             fetch("/clase/" + slug)
                 .then(res => res.text())
                 .then(html => {
-                    document.getElementById("contenido-clase").innerHTML = html;
+                    const contenedor = document.getElementById("contenido-clase");
+                    contenedor.innerHTML = html;
+                    
+                    // Ejecutar los scripts que vienen en el HTML
+                    const scripts = contenedor.querySelectorAll('script');
+                    scripts.forEach(script => {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = script.textContent;
+                        document.body.appendChild(newScript);
+                        document.body.removeChild(newScript);
+                    });
+                    
+                    // Inicializar el botón de completar clase
+                    inicializarBotonCompletar();
                 });
+        }
+        
+        function inicializarBotonCompletar() {
+            setTimeout(function() {
+                const btn = document.getElementById('btnCompletarClase');
+                
+                if (!btn) {
+                    console.log('No hay botón de completar en esta vista');
+                    return;
+                }
+                
+                console.log('✅ Inicializando botón completar clase');
+                
+                // Agregar event listener al botón
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    completarClaseActual();
+                });
+                
+                const cursoSlug = btn.getAttribute('data-curso');
+                const claseSlug = btn.getAttribute('data-clase');
+                
+                // Verificar si ya está completada
+                if (cursoSlug) {
+                    fetch('/api/progreso/' + cursoSlug)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.clases_completadas.includes(claseSlug)) {
+                                const btnTexto = document.getElementById('btnTexto');
+                                btnTexto.textContent = '✅ Completada';
+                                btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+                                btn.disabled = true;
+                            }
+                        })
+                        .catch(error => console.error('Error al cargar progreso:', error));
+                }
+            }, 100);
+        }
+        
+        function completarClaseActual() {
+            const btn = document.getElementById('btnCompletarClase');
+            const btnTexto = document.getElementById('btnTexto');
+            
+            if (!btn) {
+                alert('❌ Error: Botón no encontrado');
+                return;
+            }
+            
+            const cursoSlug = btn.getAttribute('data-curso');
+            const claseSlug = btn.getAttribute('data-clase');
+            
+            if (!cursoSlug || !claseSlug) {
+                alert('❌ Error: Faltan datos del curso o clase');
+                return;
+            }
+            
+            // Cambiar estado del botón
+            btn.disabled = true;
+            btnTexto.textContent = '⏳ Guardando...';
+            
+            fetch('/api/completar-clase', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    curso_slug: cursoSlug,
+                    clase_slug: claseSlug
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    btnTexto.textContent = '✅ Completada';
+                    btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+                    
+                    // Mostrar mensaje de éxito
+                    alert('✅ ' + data.message + '\n\n📊 Progreso: ' + data.clases_completadas + '/' + data.total_clases + ' clases (' + data.porcentaje + '%)');
+                    
+                    // Actualizar el sidebar
+                    actualizarSidebarProgreso(cursoSlug);
+                } else {
+                    alert('❌ ' + data.message);
+                    btn.disabled = false;
+                    btnTexto.textContent = '✅ Marcar como completada';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error al completar la clase. Por favor intenta de nuevo.');
+                btn.disabled = false;
+                btnTexto.textContent = '✅ Marcar como completada';
+            });
+        }
+        
+        function actualizarSidebarProgreso(cursoSlug) {
+            // Recargar progreso del curso
+            fetch('/api/progreso/' + cursoSlug)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Actualizar checkmarks en el sidebar
+                        data.clases_completadas.forEach(claseSlug => {
+                            const enlace = document.querySelector(`a[data-clase-slug="${claseSlug}"] .check-icon`);
+                            if (enlace) {
+                                enlace.textContent = '✅';
+                                enlace.parentElement.style.color = '#11998e';
+                                enlace.parentElement.style.fontWeight = '500';
+                            }
+                        });
+                        
+                        // Actualizar barra de progreso
+                        const cursoDiv = document.querySelector(`[data-curso="${cursoSlug}"]`);
+                        if (cursoDiv) {
+                            const progressBar = cursoDiv.querySelector('.progreso-bar-fill');
+                            const progressText = cursoDiv.querySelector('.progreso-texto');
+                            
+                            if (progressBar) {
+                                progressBar.style.width = data.porcentaje + '%';
+                            }
+                            if (progressText) {
+                                progressText.textContent = data.num_completadas + '/' + data.total_clases + ' clases (' + data.porcentaje + '%)';
+                            }
+                        }
+                    }
+                })
+                .catch(error => console.error('Error actualizando sidebar:', error));
+        }
+
+        // Cargar progreso del usuario
+        function cargarProgresoUsuario() {
+            {% if usuario %}
+            fetch('/api/progreso-general')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Actualizar checkmarks en el sidebar
+                        Object.keys(data.progreso).forEach(cursoSlug => {
+                            const cursoProg = data.progreso[cursoSlug];
+                            
+                            // Cargar las clases completadas de cada curso
+                            fetch('/api/progreso/' + cursoSlug)
+                                .then(response => response.json())
+                                .then(cursoData => {
+                                    if (cursoData.success) {
+                                        cursoData.clases_completadas.forEach(claseSlug => {
+                                            const enlace = document.querySelector(`a[data-curso-slug="${cursoSlug}"][data-clase-slug="${claseSlug}"] .check-icon`);
+                                            if (enlace) {
+                                                enlace.textContent = '✅';
+                                                enlace.parentElement.style.color = '#11998e';
+                                                enlace.parentElement.style.fontWeight = '500';
+                                            }
+                                        });
+                                    }
+                                });
+                            
+                            // Actualizar barra de progreso en tarjetas de cursos
+                            const cursoCard = document.querySelector(`[data-curso="${cursoSlug}"] .progreso-bar-fill`);
+                            if (cursoCard) {
+                                cursoCard.style.width = cursoProg.porcentaje + '%';
+                            }
+                            const cursoTexto = document.querySelector(`[data-curso="${cursoSlug}"] .progreso-texto`);
+                            if (cursoTexto) {
+                                cursoTexto.textContent = cursoProg.completadas + '/' + cursoProg.total + ' clases (' + cursoProg.porcentaje + '%)';
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error('Error cargando progreso:', error));
+            {% endif %}
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -772,20 +1606,65 @@
                 semanasContainer.appendChild(boton);
             }
 
-            // Navegación menú
+            // Navegación menú con Cross Fade
             document.querySelectorAll(".nav-links a").forEach(link => {
                 link.addEventListener("click", (e) => {
                     e.preventDefault();
                     const seccionId = link.getAttribute("data-seccion");
-                    document.querySelectorAll(".main > div").forEach(div => {
-                        div.style.display = "none";
-                    });
-                    const seccion = document.getElementById(seccionId);
-                    if (seccion) {
-                        if (seccionId === "u-biblica") {
-                            seccion.style.display = "flex";
-                        } else {
-                            seccion.style.display = "block";
+                    
+                    // Proteger Universidad - requiere login
+                    const usuarioLogueado = {{ 'true' if usuario else 'false' }};
+                    if (seccionId === 'u-biblica' && !usuarioLogueado) {
+                        alert('⚠️ Debes iniciar sesión para acceder a Universidad Bíblica');
+                        cargarLogin();
+                        return;
+                    }
+                    
+                    // Encontrar la sección activa actual
+                    const seccionActiva = Array.from(document.querySelectorAll(".main > div")).find(
+                        div => div.style.display !== "none"
+                    );
+                    
+                    // Fade out de la sección actual
+                    if (seccionActiva) {
+                        seccionActiva.classList.add("fade-out");
+                        
+                        // Esperar a que termine el fade out
+                        setTimeout(() => {
+                            seccionActiva.style.display = "none";
+                            seccionActiva.classList.remove("fade-out");
+                            
+                            // Mostrar y hacer fade in de la nueva sección
+                            const seccion = document.getElementById(seccionId);
+                            if (seccion) {
+                                if (seccionId === "u-biblica") {
+                                    seccion.style.display = "flex";
+                                    // Cargar progreso cuando se abre Universidad
+                                    cargarProgresoUsuario();
+                                } else {
+                                    seccion.style.display = "block";
+                                }
+                                seccion.classList.add("fade-in");
+                                
+                                // Limpiar la clase después de la animación
+                                setTimeout(() => {
+                                    seccion.classList.remove("fade-in");
+                                }, 500);
+                            }
+                        }, 500); // Duración del fade out
+                    } else {
+                        // Si no hay sección activa, mostrar directamente
+                        const seccion = document.getElementById(seccionId);
+                        if (seccion) {
+                            if (seccionId === "u-biblica") {
+                                seccion.style.display = "flex";
+                            } else {
+                                seccion.style.display = "block";
+                            }
+                            seccion.classList.add("fade-in");
+                            setTimeout(() => {
+                                seccion.classList.remove("fade-in");
+                            }, 500);
                         }
                     }
                 });
@@ -828,6 +1707,42 @@
             const menu = document.getElementById("menuOculto");
             menu.classList.toggle("mostrar");
         }
+        
+        function cerrarMenu() {
+            const menu = document.getElementById("menuOculto");
+            menu.classList.remove("mostrar");
+        }
+        
+        function confirmarCierreSesion(event) {
+            event.preventDefault();
+            if (confirm('🚪 ¿Estás seguro que deseas cerrar sesión?')) {
+                window.location.href = '/logout';
+            }
+            return false;
+        }
+        
+        // Cerrar menú al hacer clic en cualquier enlace del menú hamburguesa
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuOculto = document.getElementById("menuOculto");
+            const enlaces = menuOculto.querySelectorAll("a");
+            
+            enlaces.forEach(enlace => {
+                enlace.addEventListener("click", function() {
+                    cerrarMenu();
+                });
+            });
+            
+            // Cerrar menú al hacer clic fuera de él
+            document.addEventListener("click", function(event) {
+                const hamburguesa = document.querySelector(".hamburguesa");
+                const menu = document.getElementById("menuOculto");
+                
+                if (!hamburguesa.contains(event.target) && !menu.contains(event.target)) {
+                    cerrarMenu();
+                }
+            });
+        });
+        
         function cargarLogin() {
             fetch("/login")
                 .then(res => res.text())
@@ -846,6 +1761,66 @@
                     document.getElementById("sidebar-izquierdo").style.display = "none";
                 });
         }
+
+        // Manejar el formulario de perfil
+        document.addEventListener('DOMContentLoaded', function() {
+            const formPerfil = document.getElementById('formPerfil');
+            if (formPerfil) {
+                formPerfil.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(formPerfil);
+                    const submitBtn = formPerfil.querySelector('button[type="submit"]');
+                    const btnOriginalText = submitBtn.textContent;
+                    
+                    // Cambiar texto del botón mientras guarda
+                    submitBtn.textContent = '⏳ Guardando...';
+                    submitBtn.disabled = true;
+                    
+                    fetch('/api/actualizar-perfil', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('✅ ' + data.message);
+                            // Actualizar el nombre en el menú si cambió
+                            const nombre = data.nombre;
+                            const userNameElement = document.querySelector('.menu-oculto p');
+                            if (userNameElement) {
+                                userNameElement.innerHTML = '<span style="font-size: 24px;">👤</span> ' + nombre;
+                            }
+                        } else {
+                            alert('❌ ' + data.message);
+                        }
+                        // Restaurar botón
+                        submitBtn.textContent = btnOriginalText;
+                        submitBtn.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('❌ Error al actualizar el perfil. Por favor intenta de nuevo.');
+                        // Restaurar botón
+                        submitBtn.textContent = btnOriginalText;
+                        submitBtn.disabled = false;
+                    });
+                });
+            }
+
+            // Auto-ocultar mensajes flash después de 5 segundos
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+                    message.style.opacity = '0';
+                    message.style.transform = 'translateX(400px)';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+        });
     </script>
 </body>
 
