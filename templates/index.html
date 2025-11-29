@@ -962,7 +962,7 @@
     <!-- Navegación Sticky Premium -->
     <div class="nav-links">
         <a href="#" data-seccion="inicio">Inicio</a>
-        <a href="#" data-seccion="u-biblica">Universidad</a>
+        <a href="#" data-seccion="u-biblica" onclick="validarLogin(event)">Universidad</a>
         <a href="#" data-seccion="testimonios">Testimonios</a>
         <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
         <a href="#" data-seccion="madre">40 Formas de ser Madre</a>
@@ -991,7 +991,7 @@
                 <a href="/logout" onclick="return confirmarCierreSesion(event)">🚪 Cerrar sesión</a>
             {% else %}
                 <!-- Opciones para usuarios no logueados -->
-                <a href="#" onclick="cargarLogin()">🔑 Iniciar sesión</a>
+                <a href="#" onclick="cargarLoginEnContenedor(); toggleMenu(); return false;">🔑 Iniciar sesión</a>
                 <a href="/registro">📝 Registrarse</a>
                 <a href="/eventos">📅 Eventos</a>
                 <a href="/podcast">🎧 Podcast / Audios</a>
@@ -1055,56 +1055,49 @@
                             <div class="carousel-container">
                                 <!-- Slide 1 -->
                                 <div class="carousel-slide active">
-                                    <h4>1. La Palabra de Dios</h4>
-                                    <p>Creemos que la Biblia es la Palabra inspirada, inerrante y suficiente de Dios, nuestra única regla infalible de fe y práctica.</p>
-                                    <p class="verse">(2 Timoteo 3:16; 2 Pedro 1:21)</p>
-                                </div>
-                                
-                                <!-- Slide 2 -->
-                                <div class="carousel-slide">
-                                    <h4>2. Dios Trino</h4>
+                                    <h4>1. Dios Trino</h4>
                                     <p>Creemos en un solo Dios, eterno y verdadero, que existe en tres personas: Padre, Hijo y Espíritu Santo.</p>
                                     <p class="verse">(Deuteronomio 6:4; Mateo 28:19)</p>
                                 </div>
                                 
-                                <!-- Slide 3 -->
+                                <!-- Slide 2 -->
                                 <div class="carousel-slide">
-                                    <h4>3. Jesucristo</h4>
+                                    <h4>2. Jesucristo</h4>
                                     <p>Creemos que Jesucristo es Dios hecho hombre, concebido por el Espíritu Santo y nacido de una virgen. Vivió sin pecado, murió por nuestros pecados, resucitó corporalmente y volverá con poder y gloria.</p>
                                     <p class="verse">(Juan 1:1,14; Romanos 1:3-4)</p>
                                 </div>
                                 
-                                <!-- Slide 4 -->
+                                <!-- Slide 3 -->
                                 <div class="carousel-slide">
-                                    <h4>4. El Espíritu Santo</h4>
+                                    <h4>3. El Espíritu Santo</h4>
                                     <p>Creemos que el Espíritu Santo convence de pecado, regenera, mora en el creyente y lo capacita para una vida santa y para el servicio.</p>
                                     <p class="verse">(Juan 16:8; Gálatas 5:22-23)</p>
                                 </div>
                                 
-                                <!-- Slide 5 -->
+                                <!-- Slide 4 -->
                                 <div class="carousel-slide">
-                                    <h4>5. La Salvación</h4>
+                                    <h4>4. La Salvación</h4>
                                     <p>Creemos que somos salvos únicamente por gracia, mediante la fe en Jesucristo, no por obras.</p>
                                     <p class="verse">(Efesios 2:8-9; Tito 3:5)</p>
                                 </div>
                                 
-                                <!-- Slide 6 -->
+                                <!-- Slide 5 -->
                                 <div class="carousel-slide">
-                                    <h4>6. La Iglesia</h4>
+                                    <h4>5. La Iglesia</h4>
                                     <p>Creemos que la Iglesia es el cuerpo de Cristo, compuesta por todos los redimidos. Su misión es adorar a Dios, edificar a los creyentes y proclamar el evangelio a todas las naciones.</p>
                                     <p class="verse">(Efesios 1:22-23; Mateo 28:19-20)</p>
                                 </div>
                                 
-                                <!-- Slide 7 -->
+                                <!-- Slide 6 -->
                                 <div class="carousel-slide">
-                                    <h4>7. La Segunda Venida</h4>
+                                    <h4>6. La Segunda Venida</h4>
                                     <p>Creemos que Jesucristo volverá personalmente, para juzgar a vivos y muertos, y establecer su reino eterno de justicia y paz.</p>
                                     <p class="verse">(Hechos 1:11; Apocalipsis 22:12)</p>
                                 </div>
                                 
-                                <!-- Slide 8 -->
+                                <!-- Slide 7 -->
                                 <div class="carousel-slide">
-                                    <h4>8. La Vida Cristiana</h4>
+                                    <h4>7. La Vida Cristiana</h4>
                                     <p>Creemos que el creyente está llamado a vivir en santidad, amar a Dios sobre todas las cosas y al prójimo como a sí mismo.</p>
                                     <p class="verse">(1 Pedro 1:15-16; Mateo 22:37-39)</p>
                                 </div>
@@ -1120,7 +1113,6 @@
                                         <span class="carousel-dot" onclick="goToSlide(4)"></span>
                                         <span class="carousel-dot" onclick="goToSlide(5)"></span>
                                         <span class="carousel-dot" onclick="goToSlide(6)"></span>
-                                        <span class="carousel-dot" onclick="goToSlide(7)"></span>
                                     </div>
                                     <button class="carousel-arrow" onclick="nextSlide()">›</button>
                                 </div>
@@ -1205,22 +1197,27 @@
             <div class="sidebar" id="sidebar-izquierdo">
                 <h2>Secciones</h2>
                 {% for seccion, clases in secciones.items() %}
-                <div data-curso="{{ seccion }}" style="margin-bottom: 20px;">
-                    <strong style="font-size: 16px; color: #667eea;">{{ seccion }}</strong>
-                    
-                    <!-- Barra de progreso del curso -->
-                    <div style="margin: 8px 0 12px 0;">
-                        <div style="background: #e0e0e0; border-radius: 10px; height: 8px; overflow: hidden;">
-                            <div class="progreso-bar-fill" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; transition: width 0.5s ease;"></div>
-                        </div>
-                        <p class="progreso-texto" style="font-size: 11px; color: #999; margin: 4px 0 0 0;">0/{{ clases|length }} clases (0%)</p>
+                <div data-curso="{{ seccion }}" style="margin-bottom: 20px;" class="seccion-container">
+                    <div class="seccion-header" onclick="toggleSeccion(this)" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <span class="flecha-toggle" style="transition: transform 0.3s ease; display: inline-block;">▶</span>
+                        <strong style="font-size: 16px; color: #667eea;">{{ seccion }}</strong>
                     </div>
                     
-                    {% for clase in clases %}
-                    <a href="#" class="clase-link" data-curso-slug="{{ seccion }}" data-clase-slug="{{ clase.slug }}" onclick="cargarClase('{{ clase.slug }}')">
-                        <span class="check-icon">⬜</span> {{ clase.titulo }}
-                    </a>
-                    {% endfor %}
+                    <div class="seccion-content" style="display: none; margin-top: 8px;">
+                        <!-- Barra de progreso del curso -->
+                        <div style="margin: 8px 0 12px 0;">
+                            <div style="background: #e0e0e0; border-radius: 10px; height: 8px; overflow: hidden;">
+                                <div class="progreso-bar-fill" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; transition: width 0.5s ease;"></div>
+                            </div>
+                            <p class="progreso-texto" style="font-size: 11px; color: #999; margin: 4px 0 0 0;">0/{{ clases|length }} clases (0%)</p>
+                        </div>
+                        
+                        {% for clase in clases %}
+                        <a href="#" class="clase-link" data-curso-slug="{{ seccion }}" data-clase-slug="{{ clase.slug }}" onclick="cargarClase('{{ clase.slug }}')">
+                            <span class="check-icon">⬜</span> {{ clase.titulo }}
+                        </a>
+                        {% endfor %}
+                    </div>
                 </div>
                 {% endfor %}
             </div>
@@ -1403,11 +1400,75 @@
             currentSlide = index;
             showSlide(currentSlide);
         }
+        
+        function validarLogin(event) {
+            {% if not usuario %}
+                event.preventDefault();
+                cargarLoginEnContenedor();
+                return false;
+            {% endif %}
+        }
+        
+        function cargarLoginEnContenedor() {
+            // Primero mostrar la sección universidad
+            const seccionUBiblica = document.getElementById('u-biblica');
+            const seccionesOcultar = document.querySelectorAll('.main > div');
+            seccionesOcultar.forEach(s => s.style.display = 'none');
+            seccionUBiblica.style.display = 'flex';
+            
+            fetch('/login')
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const loginContent = doc.querySelector('body').innerHTML;
+                    
+                    const contenedor = document.getElementById('contenido-clase');
+                    contenedor.innerHTML = loginContent;
+                    
+                    // En móvil, mostrar el contenedor
+                    if (window.innerWidth <= 768) {
+                        const sidebar = document.getElementById('sidebar-izquierdo');
+                        sidebar.classList.add('oculto-movil');
+                        contenedor.classList.add('visible-movil');
+                        crearBotonVolverMovil();
+                    }
+                });
+        }
+        
+        function toggleSeccion(headerElement) {
+            {% if not usuario %}
+                cargarLoginEnContenedor();
+                return;
+            {% endif %}
+            
+            const container = headerElement.parentElement;
+            const content = container.querySelector('.seccion-content');
+            const flecha = headerElement.querySelector('.flecha-toggle');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                flecha.style.transform = 'rotate(90deg)';
+            } else {
+                content.style.display = 'none';
+                flecha.style.transform = 'rotate(0deg)';
+            }
+        }
     
         function cargarClase(slug) {
             fetch("/clase/" + slug)
-                .then(res => res.text())
+                .then(res => {
+                    // Si el servidor redirige a login, fetch sigue la redirección
+                    // Verificar si la respuesta es la página de login
+                    if (res.url.includes('/login')) {
+                        cargarLoginEnContenedor();
+                        return null;
+                    }
+                    return res.text();
+                })
                 .then(html => {
+                    if (!html) return; // Si fue redirigido a login, no continuar
+                    
                     const contenedor = document.getElementById("contenido-clase");
                     contenedor.innerHTML = html;
                     
@@ -1765,8 +1826,7 @@
                     // Proteger Universidad - requiere login
                     const usuarioLogueado = {{ 'true' if usuario else 'false' }};
                     if (seccionId === 'u-biblica' && !usuarioLogueado) {
-                        alert('⚠️ Debes iniciar sesión para acceder a Universidad Bíblica');
-                        cargarLogin();
+                        // No hacer nada aquí, el onclick="validarLogin(event)" se encarga
                         return;
                     }
                     
