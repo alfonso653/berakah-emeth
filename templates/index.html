@@ -422,13 +422,27 @@
             }
 
             .nav-links {
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
                 gap: 10px;
+                justify-content: flex-start;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+                padding: 18px 15px;
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE/Edge */
+            }
+
+            .nav-links::-webkit-scrollbar {
+                display: none; /* Chrome/Safari */
             }
 
             .nav-links a {
-                padding: 8px 12px;
+                padding: 10px 18px;
                 font-size: 14px;
+                white-space: nowrap;
+                flex-shrink: 0;
             }
 
             .sidebar {
