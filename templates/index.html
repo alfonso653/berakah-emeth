@@ -423,13 +423,13 @@
 
             .nav-links {
                 flex-wrap: nowrap;
-                gap: 10px;
+                gap: 12px;
                 justify-content: flex-start;
                 overflow-x: auto;
                 overflow-y: hidden;
                 -webkit-overflow-scrolling: touch;
                 scroll-behavior: smooth;
-                padding: 18px 15px;
+                padding: 22px 20px;
                 scrollbar-width: none; /* Firefox */
                 -ms-overflow-style: none; /* IE/Edge */
             }
@@ -439,8 +439,8 @@
             }
 
             .nav-links a {
-                padding: 10px 18px;
-                font-size: 14px;
+                padding: 14px 22px;
+                font-size: 15px;
                 white-space: nowrap;
                 flex-shrink: 0;
             }
@@ -515,6 +515,11 @@
 
                 .btn-volver-movil:active {
                     transform: scale(0.95);
+                }
+                
+                /* 40 formas de ser madre - responsive móvil */
+                #semanas {
+                    grid-template-columns: repeat(2, 1fr) !important;
                 }
             }
         }
@@ -980,37 +985,6 @@
         <a href="#" data-seccion="testimonios">Testimonios</a>
         <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
         <a href="#" data-seccion="madre">40 Formas de ser Madre</a>
-
-        <div class="hamburguesa" onclick="toggleMenu()">☰</div>
-        <div class="menu-oculto" id="menuOculto">
-            {% if usuario %}
-                <!-- Perfil del usuario en el menú -->
-                <div style="padding: 20px 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%); border-radius: 12px; margin-bottom: 12px; border: 2px solid rgba(102, 126, 234, 0.2);">
-                    <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 16px; color: #667eea; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 24px;">👤</span> {{ usuario.nombre }}
-                    </p>
-                    <p style="margin: 6px 0 0 32px; font-family: 'Poppins', sans-serif; font-size: 12px; color: #666; word-break: break-all;">
-                        {{ usuario.email }}
-                    </p>
-                </div>
-                
-                <!-- Opciones para usuarios logueados -->
-                <a href="#" data-seccion="perfil">👤 Perfil</a>
-                <a href="/mis-clases">📚 Mis clases</a>
-                <a href="/certificados">🎓 Certificados</a>
-                <a href="/formulario-ayuda">📝 Formulario de ayuda</a>
-                <a href="/notificaciones">🔔 Notificaciones</a>
-                <a href="/eventos">📅 Eventos</a>
-                <a href="/podcast">🎧 Podcast / Audios</a>
-                <a href="/logout" onclick="return confirmarCierreSesion(event)">🚪 Cerrar sesión</a>
-            {% else %}
-                <!-- Opciones para usuarios no logueados -->
-                <a href="#" onclick="cargarLoginEnContenedor(); toggleMenu(); return false;">🔑 Iniciar sesión</a>
-                <a href="/registro">📝 Registrarse</a>
-                <a href="/eventos">📅 Eventos</a>
-                <a href="/podcast">🎧 Podcast / Audios</a>
-            {% endif %}
-        </div>
     </div>
 
     <!-- Mensajes Flash -->
@@ -1240,32 +1214,32 @@
             </div>
         </div>
 
-        <div id="testimonios" style="display: none; width: 100%; padding: 30px;">
-            <h2>📝 Testimonios</h2>
-            <div style="margin-bottom: 30px;">
-                <h3>Juan Pérez <small style="color: gray;"> - 20 abril 2025</small></h3>
-                <p>Antes me sentía perdido, pero Dios me encontró y transformó mi vida completamente. Hoy sirvo con
+        <div id="testimonios" style="display: none; width: 100%; padding: 30px; box-sizing: border-box; overflow-x: hidden;">
+            <h2 style="word-wrap: break-word;">📝 Testimonios</h2>
+            <div style="margin-bottom: 30px; max-width: 100%;">
+                <h3 style="word-wrap: break-word; overflow-wrap: break-word;">Juan Pérez <small style="color: gray;"> - 20 abril 2025</small></h3>
+                <p style="word-wrap: break-word; overflow-wrap: break-word;">Antes me sentía perdido, pero Dios me encontró y transformó mi vida completamente. Hoy sirvo con
                     gozo.</p>
             </div>
-            <div style="margin-bottom: 30px;">
-                <h3>María Gómez <small style="color: gray;"> - 19 abril 2025</small></h3>
-                <p>Dios restauró mi familia. Cada día agradezco por su fidelidad y amor constante. ¡Él es bueno!</p>
+            <div style="margin-bottom: 30px; max-width: 100%;">
+                <h3 style="word-wrap: break-word; overflow-wrap: break-word;">María Gómez <small style="color: gray;"> - 19 abril 2025</small></h3>
+                <p style="word-wrap: break-word; overflow-wrap: break-word;">Dios restauró mi familia. Cada día agradezco por su fidelidad y amor constante. ¡Él es bueno!</p>
             </div>
         </div>
 
-        <div id="venciendo-pornografia" style="display: none; width: 100%; padding: 30px;">
-            <h2>🛡️ Venciendo la Pornografía</h2>
-            <p style="color: #555;">Haz clic en un día para ver el versículo y disciplina correspondiente. Marca cuando
+        <div id="venciendo-pornografia" style="display: none; width: 100%; padding: 30px; box-sizing: border-box; overflow-x: hidden;">
+            <h2 style="word-wrap: break-word;">🛡️ Venciendo la Pornografía</h2>
+            <p style="color: #555; word-wrap: break-word;">Haz clic en un día para ver el versículo y disciplina correspondiente. Marca cuando
                 hayas completado.</p>
             <div id="calendario"
-                style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 20px;"></div>
+                style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 20px; max-width: 100%;"></div>
         </div>
 
-        <div id="madre" style="display: none; width: 100%; padding: 30px;">
-            <h2>🌸 40 formas de ser madre</h2>
-            <p style="color: #555;">Muy pronto encontrarás aquí enseñanzas hermosas para todas las mamás.</p>
+        <div id="madre" style="display: none; width: 100%; padding: 30px; box-sizing: border-box; overflow-x: hidden;">
+            <h2 style="word-wrap: break-word;">🌸 40 formas de ser madre</h2>
+            <p style="color: #555; word-wrap: break-word;">Muy pronto encontrarás aquí enseñanzas hermosas para todas las mamás.</p>
             <div id="semanas"
-                style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-top: 20px;"></div>
+                style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-top: 20px; max-width: 100%;"></div>
         </div>
 
         <!-- Sección de Perfil -->
