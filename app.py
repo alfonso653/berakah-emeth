@@ -36,14 +36,92 @@ def login_required(f):
 
 # Diccionario con las secciones y sus clases
 secciones = {
-    "Doctrinas": [
-        {"titulo": "Clase 1: La Revelación de Dios", "slug": "revelacion-de-dios", "video_url": "https://www.youtube.com/embed/MDlvQqrYSvs"},
-        {"titulo": "Clase 2: La Imagen de Dios", "slug": "imagen-de-dios", "video_url": "https://www.youtube.com/embed/c2pA4-G2z_o"}
+    "Doctrina de Dios (Teología Propia)": [
+        {
+            "titulo": "Clase 1: Revelación general y especial", 
+            "slug": "revelacion-general-especial", 
+            "video_url": "https://www.youtube.com/embed/MDlvQqrYSvs", 
+            "descripcion": """
+<h2 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">CAPÍTULO 1: LA REVELACIÓN DE DIOS</h2>
+
+<h3 style="color: #764ba2; margin-top: 25px;">¿Dios es un Relojero?</h3>
+<p>En el vasto campo del pensamiento humano, una de las preguntas más profundas es si Dios se relaciona con la humanidad. Algunos sostienen que Dios, aunque real, permanece distante, mientras que otros creen que Él se ha revelado activamente a través de la creación y la historia. Este capítulo explora la doctrina de la revelación de Dios, abordando cómo Él se manifiesta al hombre, contrastando esta verdad bíblica con la perspectiva de los deístas, y reflexionando sobre nuestro papel en Su revelación.</p>
+
+<p>Vamos a profundizar en la doctrina de la revelación a través de los siguientes pensamientos que se han dado al pasar de tiempo.</p>
+
+<h4 style="color: #555; margin-top: 20px;">Dios no se revela al hombre</h4>
+<p>Quienes afirman que Dios no se revela plantean dos razones principales. La primera es que <strong>Dios no existe</strong>, lo que implica que no hay nada que revelar ni un ser que lo haga. La inexistencia de Dios, por lo tanto, sería una negación total de cualquier comunicación divina. La segunda razón es que, aunque aceptan la existencia de Dios, argumentan que <strong>Él no tiene interés en relacionarse con Su creación</strong>, dejando al hombre en un vacío espiritual y existencial, ya que es un ser que crea por el simple hecho de que puede, sin ningún propósito o motivación específica, un Ser que no tiene nada en común con su creación.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+<img src="/static/images/mapa-dios-no-se-revela.png" alt="Mapa mental - Dios no se revela" style="max-width: 100%; height: auto; border: 2px solid #ddd; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+<p style="font-size: 14px; color: #666; margin-top: 10px; font-style: italic;">Mapa mental: Posturas sobre la revelación de Dios</p>
+</div>
+
+<p>Estas dos posturas relacionadas a la revelación divina: el <strong>ateísmo</strong> y el <strong>deísmo</strong> se entienden como: el ateísmo defiende la idea de que Dios no existe, mientras que el deísmo, aunque reconoce la existencia de un Dios, niega su involucramiento activo con la creación. A este Dios se le ha denominado en diversos textos sobre el tema como el <strong>"Dios relojero"</strong>, haciendo referencia a la idea de un relojero que, al crear un reloj, se aleja de él una vez lo ha vendido, aunque es su creador. Según esta perspectiva, Dios construyó el universo, estableció sus leyes naturales y luego lo dejó funcionar de manera independiente, sin intervenir jamás.</p>
+
+<h4 style="color: #555; margin-top: 20px;">Dos exponentes destacados del deísmo:</h4>
+
+<p><strong>Salvador Freixedo:</strong> Este exsacerdote afirmaba: <em>"Mi Dios no es un Dios personal, no está acá, no se enfada, no perdona, no es hombre ni persona. Ese Dios es una amenaza para la humanidad y es un insulto para la inteligencia humana"</em>. Freixedo abandonó su fe en el Dios de la Biblia y dedicó su vida al estudio de la ufología, alejándose de la idea de un Dios personal y cercano al ser humano.</p>
+
+<p><strong>Thomas Paine:</strong> Crítico de la religión organizada, Paine sostenía: <em>"Dios puede ser contemplado en la creación, no es necesario buscarlo en las escrituras"</em>. Paine fue aún más radical, llegando a calificar ciertos pasajes de la Biblia como obra de un "demonio usurpando el lugar de Dios", específicamente los que mostraban a Dios justo y que estaba cerca de su creación.</p>
+
+<p>Para estos exponentes Dios era "Un relojero" creador que no se preocupa por su creación. <strong>Gracias a Dios tenemos el estudio de la revelación general y específica de Dios.</strong></p>
+
+<h3 style="color: #764ba2; margin-top: 25px;">La Biblia nos enseña que Dios sí se revela al hombre</h3>
+<p>A diferencia de otras creencias, la Biblia afirma que Dios no solo es real, sino que también busca tener una relación cercana y profunda con la humanidad y contigo personalmente. Esto lo vemos claramente en las Escrituras, donde se muestra a un Dios que, lejos de ser distante, se da a conocer de manera clara y directa a través de distintos medios. La visión bíblica contradice directamente al deísmo, presentando a un Dios que desea ser conocido y que se revela activamente al hombre.</p>
+
+<p>Veamos que dice la Biblia. Según las Escrituras, esta revelación divina se manifiesta de dos formas principales:</p>
+
+<h4 style="color: #667eea; margin-top: 20px;">� Revelación General</h4>
+<p>La revelación general es la manifestación de Dios ya establecida a toda la humanidad a través de medios accesibles, como la creación, la mente y el corazón humano.</p>
+
+<h5>• A través de la creación:</h5>
+<p style="padding: 10px; background: #f0f4ff; border-left: 3px solid #667eea; margin: 10px 0;"><strong>Romanos 1:20</strong> - <em>"Porque desde la creación del mundo las cualidades invisibles de Dios, es decir, su eterno poder y su naturaleza divina, se perciben claramente a través de lo que él creó, de modo que nadie tiene excusa."</em></p>
+
+<p>La palabra <strong>percibe claramente</strong> (<em>ἐφανερώθη - epanerōthē</em>), que aparece en Romanos 1:20 en el griego original, se traduce generalmente como "se ha manifestado" o "ha sido revelado". Esta palabra subraya la idea de que Dios se ha hecho visible o evidente de manera clara y comprensible. Esta forma verbal expresa que lo que antes estaba oculto o no era fácilmente accesible ahora se ha hecho claro y evidente para todos, sin dejar lugar a dudas. Dios se ha manifestado claramente a través de la creación, y esa manifestación es evidente para todos, como si fuera algo que se muestra abiertamente, sin esconderse.</p>
+
+<h5>• En la mente y el corazón humano:</h5>
+<p style="padding: 10px; background: #f0f4ff; border-left: 3px solid #667eea; margin: 10px 0;"><strong>Romanos 2:15</strong> - <em>"Estos muestran que llevan escrito en el corazón lo que la Ley exige, como lo atestigua su conciencia, pues sus propios pensamientos algunas veces los acusan y otras veces los excusan."</em></p>
+
+<h4 style="color: #667eea; margin-top: 20px;">✝️ Revelación Específica</h4>
+<p>La revelación específica es el acto de Dios manifestándose de manera directa y personal a individuos o grupos en momentos claves. Dios busca que le conozcamos íntimamente y entendamos Su voluntad para nuestras vidas. La mayor expresión de este amor fue el envío de Su único Hijo, Jesús, quien vino a este mundo para mostrar en plenitud el carácter y el propósito de Dios. En Jesús, Dios nos reveló Su amor incondicional y Su plan de salvación para toda la humanidad. <strong>No hay mayor revelación que esta.</strong></p>
+
+<p>La revelación específica de Dios se manifiesta de diversas maneras, como en su llamado individual a Abraham para establecer un pacto (Génesis 12:1-9) y en la entrega de los Diez Mandamientos al pueblo de Israel mediante Moisés (Éxodo 20). Sin embargo, <strong>la mayor revelación de Dios es Jesucristo</strong>, quien, según Hebreos 1:1-4, es el reflejo perfecto de su gloria y esencia.</p>
+
+<h4 style="color: #667eea; margin-top: 20px;">📚 La Fuente Suprema de Revelación: La Biblia</h4>
+<p>La Biblia se presenta como la expresión más completa y suprema de la revelación divina. Inspirada por Dios, contiene todo lo necesario para que el hombre conozca a su Creador y viva de acuerdo con Su voluntad (2 Timoteo 3:16-17). En la Biblia encontramos no solo las palabras de Dios, sino también Su plan eterno para la redención de la humanidad, el propósito de la creación y el modelo para una vida plena en comunión con Él.</p>
+
+<h3 style="color: #764ba2; margin-top: 25px;">Conclusión</h3>
+<p><strong>¿Es Dios un relojero que abandona Su obra después de crearla?</strong> La respuesta bíblica es un rotundo <strong>no</strong>. El Dios de la Biblia no es un observador distante, sino un Creador activo, que se involucra constantemente con Su creación.</p>
+
+<div style="margin-top: 20px; padding: 20px; background: #eef5ff; border-left: 5px solid #667eea; border-radius: 8px;">
+<p style="margin: 0;"><strong>Nuestro papel en esta revelación es doble:</strong></p>
+<ol style="margin-top: 10px;">
+<li><strong>Buscar activamente a Jesús</strong>, quien es la manifestación suprema de Dios.</li>
+<li><strong>Estudiar la Biblia</strong>, permitiendo que transforme nuestra vida y nos capacite para compartir la verdad de Dios con los demás.</li>
+</ol>
+</div>
+""", 
+            "pdf_url": "/static/pdfs/revelacion-general-especial.pdf",
+            "actividad_pdf_url": "/static/pdfs/respuestas-revelacion-general-especial.pdf"
+        }
     ],
-    "Carácter": [
-        {"titulo": "Clase 1: El fruto del Espíritu", "slug": "fruto-del-espiritu", "video_url": "https://www.youtube.com/embed/qwerty5678"},
-        {"titulo": "Clase 2: Humildad en acción", "slug": "humildad", "video_url": "https://www.youtube.com/embed/qazwsx1234"}
-    ],
+    "Doctrina de la Revelación": [],
+    "Doctrina de la Creación": [],
+    "Doctrina del Hombre (Antropología)": [],
+    "Doctrina del Pecado (Hamartiología)": [],
+    "Doctrina de Cristo (Cristología)": [],
+    "Doctrina del Espíritu Santo (Neumatología)": [],
+    "Doctrina de la Salvación (Soteriología)": [],
+    "Doctrina de la Iglesia (Eclesiología)": [],
+    "Doctrina de los Últimos Tiempos (Escatología)": [],
+    "Doctrina de la Ética Cristiana": [],
+    "Doctrinas Especiales": [],
+    "Carácter de Dios": [],
+    "Carácter de Jesús": [],
+    "Carácter del Espíritu Santo": [],
+    "Palabra de Dios": [],
+    "Disciplinas": [],
     "Oración": [
         {"titulo": "Clase 1: Cómo oraba Jesús", "slug": "como-oraba-jesus", "video_url": "https://www.youtube.com/embed/oracion1"},
         {"titulo": "Clase 2: Intercesión efectiva", "slug": "intercesion-efectiva", "video_url": "https://www.youtube.com/embed/oracion2"}
@@ -51,15 +129,6 @@ secciones = {
     "Sanidad Interior": [
         {"titulo": "Clase 1: Sanando el corazón herido", "slug": "sanando-corazon-herido", "video_url": "https://www.youtube.com/embed/sanidad1"},
         {"titulo": "Clase 2: Liberación emocional", "slug": "liberacion-emocional", "video_url": "https://www.youtube.com/embed/sanidad2"}
-    ],
-    "Carácter de Dios": [
-        {"titulo": "Clase 1: Dios es amor", "slug": "dios-es-amor", "video_url": "https://www.youtube.com/embed/diosesamor1"},
-        {"titulo": "Clase 2: Dios es justo", "slug": "dios-es-justo", "video_url": "https://www.youtube.com/embed/diosesjusto2"}
-    ],
-    "Palabra de Dios": [
-        {"titulo": "Clase 1: La Biblia: Inspirada por Dios", "slug": "biblia-inspirada", "video_url": "https://www.youtube.com/embed/palabradedios1"},
-        {"titulo": "Clase 2: Cómo estudiar la Escritura", "slug": "como-estudiar-escritura", "video_url": "https://www.youtube.com/embed/palabradedios2"},
-        {"titulo": "Clase 3: La autoridad de la Palabra", "slug": "autoridad-palabra", "video_url": "https://www.youtube.com/embed/palabradedios3"}
     ]
 }
 

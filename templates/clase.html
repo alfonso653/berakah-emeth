@@ -13,16 +13,66 @@
     </div>
 
     <div style="margin-top: 30px;">
-        <h3 style="color: #555;">📝 Reflexión</h3>
+        <h3 style="color: #555;">📚 LECTURA</h3>
+        
+        {% if clase.descripcion %}
+        <div style="font-size: 16px; color: #333; line-height: 1.8; margin-top: 20px; padding: 20px; background: #fafafa; border-radius: 8px;">
+            {{ clase.descripcion | safe }}
+        </div>
+        {% else %}
         <p style="font-size: 16px; color: #555; line-height: 1.6;">
             Te animamos a ver esta clase con una actitud de oración. Toma notas, escucha con atención y permite que el Señor hable a tu corazón a través de Su Palabra.
         </p>
+        {% endif %}
+        
+        <!-- Materiales en PDF -->
+        {% if clase.pdf_url or clase.actividad_pdf_url %}
+        <div style="margin-top: 20px;">
+            <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                <strong style="color: #333;">📋 Materiales disponibles:</strong>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    {% if clase.pdf_url %}
+                    <li style="margin-bottom: 8px;">
+                        <a href="{{ clase.pdf_url }}" download style="color: #667eea; text-decoration: none; font-weight: 500;">
+                            📄 Guía de Estudio - {{ clase.titulo }}.pdf
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if clase.actividad_pdf_url %}
+                    <li style="margin-bottom: 8px;">
+                        <a href="{{ clase.actividad_pdf_url }}" download style="color: #764ba2; text-decoration: none; font-weight: 500;">
+                            ✅ Respuestas - {{ clase.titulo }}.pdf
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <div style="margin-top: 20px; background-color: #eef5ff; padding: 20px; border-left: 5px solid #007bff; border-radius: 6px;">
-        <strong style="color: #007bff;">💬 Consejo:</strong>
-        <p style="margin-top: 10px; color: #333;">
-            Después de ver la clase, comparte con alguien lo que aprendiste. La Palabra se multiplica cuando la vivimos y la compartimos con otros.
+        <strong style="color: #007bff; font-size: 18px;">✍️ Actividad:</strong>
+        <p style="margin-top: 15px; color: #333; font-weight: 600;">Reflexiona y responde las siguientes preguntas:</p>
+        <ol style="margin-top: 15px; padding-left: 25px; line-height: 2;">
+            <li style="margin-bottom: 12px; color: #333;">
+                <strong>¿Cómo contradice la Biblia la idea del "Dios relojero" propuesta por el deísmo?</strong>
+            </li>
+            <li style="margin-bottom: 12px; color: #333;">
+                <strong>¿Cuál es la diferencia entre la revelación general y la revelación específica?</strong>
+            </li>
+            <li style="margin-bottom: 12px; color: #333;">
+                <strong>¿Qué enseñan Romanos 1:20 y Romanos 2:15 sobre el conocimiento de Dios accesible a toda la humanidad?</strong>
+            </li>
+            <li style="margin-bottom: 12px; color: #333;">
+                <strong>¿Por qué Jesús es la revelación suprema y perfecta de Dios según Hebreos 1:1–4?</strong>
+            </li>
+            <li style="margin-bottom: 12px; color: #333;">
+                <strong>¿Por qué la creación no es suficiente para conocer el plan de salvación y por qué la Biblia es necesaria?</strong>
+            </li>
+        </ol>
+        <p style="margin-top: 15px; color: #555; font-style: italic;">
+            💡 Tip: Comparte tus respuestas con alguien más. La Palabra se multiplica cuando la vivimos y la compartimos con otros.
         </p>
     </div>
 

@@ -135,13 +135,15 @@
 
         .titulo-principal {
             font-family: 'Cinzel', serif;
-            font-size: 52px;
+            font-size: 30px;
             font-weight: 600;
             letter-spacing: 6px;
-            margin: 15px 0 12px 0;
+            margin: 35px 0 12px 0;
             text-transform: uppercase;
             color: #2c2c2c;
             line-height: 1.2;
+            white-space: nowrap;
+            overflow: visible;
         }
 
         .ministries {
@@ -149,7 +151,7 @@
             font-size: 14px;
             font-weight: 400;
             letter-spacing: 4px;
-            margin: -12px 0 12px 0;
+            margin: -12px 100px 12px 0;
             color: #2c2c2c;
             text-transform: uppercase;
             line-height: 1;
@@ -259,6 +261,7 @@
             padding: 20px;
             border-right: 1px solid #ddd;
             overflow-y: auto;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .clase-link {
@@ -276,6 +279,7 @@
             flex: 1;
             padding: 30px;
             overflow-y: auto;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .dia {
@@ -399,9 +403,11 @@
             }
 
             .titulo-principal {
-                font-size: 32px !important;
+                font-size: 30px !important;
                 letter-spacing: 2px !important;
                 margin: -10px 0 8px 0 !important;
+                white-space: nowrap !important;
+                overflow: visible !important;
             }
 
             .subtitulo {
@@ -437,6 +443,65 @@
 
             .content {
                 padding: 15px;
+            }
+
+            /* Botón volver en móvil */
+            .btn-volver-movil {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+                width: 0;
+                height: 0;
+                overflow: hidden;
+                visibility: hidden;
+            }
+
+            @media (max-width: 768px) {
+                #u-biblica {
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .sidebar.oculto-movil {
+                    transform: translateX(-100%);
+                }
+
+                #u-biblica .content {
+                    width: 100%;
+                    transform: translateX(100%);
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    right: 0;
+                    background: white;
+                }
+
+                #u-biblica .content.visible-movil {
+                    transform: translateX(0);
+                }
+
+                .btn-volver-movil {
+                    top: 10px;
+                    left: 10px;
+                    width: 45px;
+                    height: 45px;
+                    overflow: visible;
+                    visibility: visible;
+                    z-index: 101;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    font-size: 24px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                    transition: all 0.3s ease;
+                }
+
+                .btn-volver-movil:active {
+                    transform: scale(0.95);
+                }
             }
         }
 
@@ -1355,9 +1420,94 @@
                         document.body.removeChild(newScript);
                     });
                     
+                    // Animación en móvil
+                    if (window.innerWidth <= 768) {
+                        const sidebar = document.getElementById('sidebar-izquierdo');
+                        const content = document.getElementById('contenido-clase');
+                        
+                        sidebar.classList.add('oculto-movil');
+                        content.classList.add('visible-movil');
+                        
+                        // Recrear botón volver si no existe
+                        crearBotonVolverMovil();
+                    }
+                    
                     // Inicializar el botón de completar clase
                     inicializarBotonCompletar();
                 });
+        }
+        
+        function crearBotonVolverMovil() {
+            const uBiblica = document.getElementById('u-biblica');
+            let btnVolver = document.getElementById('btn-volver-dinamico');
+            
+            // Si no existe, crearlo
+            if (uBiblica && !btnVolver) {
+                btnVolver = document.createElement('button');
+                btnVolver.id = 'btn-volver-dinamico';
+                btnVolver.className = 'btn-volver-movil';
+                btnVolver.innerHTML = '←';
+                btnVolver.onclick = volverAlMenu;
+                btnVolver.title = 'O desliza → para volver';
+                uBiblica.insertBefore(btnVolver, uBiblica.firstChild);
+            }
+        }
+        
+        function volverAlMenu() {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar-izquierdo');
+                const content = document.getElementById('contenido-clase');
+                const btnVolver = document.getElementById('btn-volver-dinamico');
+                
+                sidebar.classList.remove('oculto-movil');
+                content.classList.remove('visible-movil');
+                
+                if (btnVolver) {
+                    btnVolver.remove();
+                }
+            }
+        }
+        
+        // Sistema de Swipe para móvil
+        if (window.innerWidth <= 768) {
+            document.addEventListener('DOMContentLoaded', function() {
+                let touchStartX = 0;
+                let touchEndX = 0;
+                let touchStartY = 0;
+                let touchEndY = 0;
+                
+                const content = document.getElementById('contenido-clase');
+                
+                if (content) {
+                    content.addEventListener('touchstart', function(e) {
+                        touchStartX = e.changedTouches[0].screenX;
+                        touchStartY = e.changedTouches[0].screenY;
+                    }, false);
+                    
+                    content.addEventListener('touchend', function(e) {
+                        touchEndX = e.changedTouches[0].screenX;
+                        touchEndY = e.changedTouches[0].screenY;
+                        handleSwipe();
+                    }, false);
+                }
+                
+                function handleSwipe() {
+                    const diffX = touchEndX - touchStartX;
+                    const diffY = Math.abs(touchEndY - touchStartY);
+                    
+                    // Swipe de izquierda a derecha (mínimo 100px) y más horizontal que vertical
+                    if (diffX > 100 && diffY < 100) {
+                        const contentElement = document.getElementById('contenido-clase');
+                        // Solo funciona si el contenido está visible (en una clase)
+                        if (contentElement && contentElement.classList.contains('visible-movil')) {
+                            volverAlMenu();
+                        }
+                    }
+                }
+                
+                // Crear botón volver inicial
+                crearBotonVolverMovil();
+            });
         }
         
         function inicializarBotonCompletar() {
