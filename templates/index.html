@@ -445,6 +445,29 @@
                 flex-shrink: 0;
             }
 
+            /* Avatar móvil */
+            .avatar-container {
+                top: 15px;
+                right: 15px;
+            }
+
+            .avatar-usuario {
+                width: 45px;
+                height: 45px;
+                border-width: 2px;
+            }
+
+            .avatar-icon {
+                font-size: 24px;
+            }
+
+            .menu-oculto {
+                right: -10px;
+                top: 55px;
+                min-width: 260px;
+                max-width: calc(100vw - 30px);
+            }
+
             .sidebar {
                 width: 100%;
                 border-right: none;
@@ -921,6 +944,106 @@
             display: block !important;
         }
 
+        /* Avatar de Usuario */
+        .avatar-container {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            z-index: 1002;
+        }
+
+        .avatar-usuario {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 3px solid white;
+        }
+
+        .avatar-usuario:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .avatar-usuario:active {
+            transform: scale(0.95);
+        }
+
+        .avatar-icon {
+            font-size: 28px;
+            color: white;
+        }
+
+        /* Colores por género */
+        .avatar-hombre {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+        }
+
+        .avatar-hombre:hover {
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6) !important;
+        }
+
+        .avatar-mujer {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4) !important;
+        }
+
+        .avatar-mujer:hover {
+            box-shadow: 0 6px 25px rgba(240, 147, 251, 0.6) !important;
+        }
+
+        .menu-oculto {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 65px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 16px;
+            border-radius: 16px;
+            z-index: 1001;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            min-width: 280px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-oculto a {
+            display: block;
+            text-decoration: none;
+            color: #2d3748;
+            font-weight: 600;
+            padding: 12px 16px;
+            margin: 4px 0;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-oculto a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateX(5px);
+        }
+
         /* Cross Fade Animation para secciones */
         .main > div {
             opacity: 1;
@@ -985,6 +1108,42 @@
         <a href="#" data-seccion="testimonios">Testimonios</a>
         <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
         <a href="#" data-seccion="madre">40 Formas de ser Madre</a>
+    </div>
+
+    <!-- Avatar de Usuario (sustituye hamburguesa) -->
+    <div class="avatar-container">
+        <div class="avatar-usuario {% if usuario and usuario.genero == 'mujer' %}avatar-mujer{% else %}avatar-hombre{% endif %}" onclick="toggleMenu()">
+            <span class="avatar-icon">👤</span>
+        </div>
+        <div class="menu-oculto" id="menuOculto">
+            {% if usuario %}
+                <!-- Perfil del usuario en el menú -->
+                <div style="padding: 20px 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%); border-radius: 12px; margin-bottom: 12px; border: 2px solid rgba(102, 126, 234, 0.2);">
+                    <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 16px; color: #667eea; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 24px;">👤</span> {{ usuario.nombre }}
+                    </p>
+                    <p style="margin: 6px 0 0 32px; font-family: 'Poppins', sans-serif; font-size: 12px; color: #666; word-break: break-all;">
+                        {{ usuario.email }}
+                    </p>
+                </div>
+                
+                <!-- Opciones para usuarios logueados -->
+                <a href="#" data-seccion="perfil">👤 Perfil</a>
+                <a href="/mis-clases">📚 Mis clases</a>
+                <a href="/certificados">🎓 Certificados</a>
+                <a href="/formulario-ayuda">📝 Formulario de ayuda</a>
+                <a href="/notificaciones">🔔 Notificaciones</a>
+                <a href="/eventos">📅 Eventos</a>
+                <a href="/podcast">🎧 Podcast / Audios</a>
+                <a href="/logout" onclick="return confirmarCierreSesion(event)">🚪 Cerrar sesión</a>
+            {% else %}
+                <!-- Opciones para usuarios no logueados -->
+                <a href="#" onclick="cargarLoginEnContenedor(); toggleMenu(); return false;">🔑 Iniciar sesión</a>
+                <a href="/registro">📝 Registrarse</a>
+                <a href="/eventos">📅 Eventos</a>
+                <a href="/podcast">🎧 Podcast / Audios</a>
+            {% endif %}
+        </div>
     </div>
 
     <!-- Mensajes Flash -->
@@ -1932,10 +2091,10 @@
             
             // Cerrar menú al hacer clic fuera de él
             document.addEventListener("click", function(event) {
-                const hamburguesa = document.querySelector(".hamburguesa");
+                const avatar = document.querySelector(".avatar-usuario");
                 const menu = document.getElementById("menuOculto");
                 
-                if (!hamburguesa.contains(event.target) && !menu.contains(event.target)) {
+                if (avatar && menu && !avatar.contains(event.target) && !menu.contains(event.target)) {
                     cerrarMenu();
                 }
             });
