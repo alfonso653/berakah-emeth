@@ -447,10 +447,10 @@
 
             /* Avatar móvil */
             .avatar-container {
-                position: fixed;
+                position: absolute;
                 top: 10px;
                 right: 10px;
-                z-index: 999;
+                z-index: 1001;
             }
 
             .avatar-usuario {
@@ -466,9 +466,15 @@
             .menu-oculto {
                 position: fixed;
                 right: 10px;
-                top: 60px;
+                top: 65px;
                 min-width: 260px;
-                max-width: calc(100vw - 30px);
+                max-width: calc(100vw - 20px);
+            }
+
+            .menu-oculto a {
+                padding: 12px 16px;
+                margin: 5px 0;
+                font-size: 15px;
             }
 
             .sidebar {
@@ -949,10 +955,10 @@
 
         /* Avatar de Usuario */
         .avatar-container {
-            position: fixed;
+            position: absolute;
             top: 20px;
             right: 30px;
-            z-index: 999;
+            z-index: 1001;
         }
 
         .avatar-usuario {
@@ -1004,30 +1010,40 @@
 
         .menu-oculto {
             display: none;
-            position: absolute;
-            right: 0;
-            top: 65px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 16px;
-            border-radius: 16px;
-            z-index: 9998;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            right: 80px;
+            top: 20px;
+            background: transparent;
+            padding: 0;
+            z-index: 10000;
             min-width: 280px;
-            animation: slideDown 0.3s ease-out;
+            animation: slideLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @keyframes slideDown {
+        @keyframes slideLeft {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateX(20px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(0);
             }
+        }
+
+        /* Perfil del usuario - Card destacada */
+        .menu-oculto > div:first-child {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4), 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+            margin-bottom: 8px !important;
+            animation: cardPop 0.3s ease-out 0.1s both;
+        }
+
+        .menu-oculto > div:first-child p {
+            color: white !important;
         }
 
         .menu-oculto a {
@@ -1035,16 +1051,65 @@
             text-decoration: none;
             color: #2d3748;
             font-weight: 600;
-            padding: 12px 16px;
-            margin: 4px 0;
-            border-radius: 10px;
-            transition: all 0.2s ease;
+            padding: 14px 18px;
+            margin: 6px 0;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            animation: cardPop 0.3s ease-out both;
+        }
+
+        /* Animación escalonada para cada card */
+        .menu-oculto a:nth-child(2) { animation-delay: 0.15s; }
+        .menu-oculto a:nth-child(3) { animation-delay: 0.2s; }
+        .menu-oculto a:nth-child(4) { animation-delay: 0.25s; }
+        .menu-oculto a:nth-child(5) { animation-delay: 0.3s; }
+        .menu-oculto a:nth-child(6) { animation-delay: 0.35s; }
+        .menu-oculto a:nth-child(7) { animation-delay: 0.4s; }
+        .menu-oculto a:nth-child(8) { animation-delay: 0.45s; }
+        .menu-oculto a:nth-child(9) { animation-delay: 0.5s; }
+
+        @keyframes cardPop {
+            from {
+                opacity: 0;
+                transform: translateX(15px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .menu-oculto a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transition: left 0.4s ease;
         }
 
         .menu-oculto a:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: translateX(5px);
+            transform: translateX(-8px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.3);
+            color: #667eea;
+        }
+
+        .menu-oculto a:hover::before {
+            left: 0;
+        }
+
+        .menu-oculto a:active {
+            transform: translateX(-8px) scale(0.98);
         }
 
         /* Cross Fade Animation para secciones */
@@ -1092,6 +1157,42 @@
 
     <!-- Topbar Premium -->
     <div class="topbar">
+        <!-- Avatar de Usuario (sustituye hamburguesa) -->
+        <div class="avatar-container">
+            <div class="avatar-usuario {% if usuario and usuario.genero == 'mujer' %}avatar-mujer{% else %}avatar-hombre{% endif %}" onclick="toggleMenu()">
+                <span class="avatar-icon">👤</span>
+            </div>
+            <div class="menu-oculto" id="menuOculto">
+                {% if usuario %}
+                    <!-- Perfil del usuario en el menú -->
+                    <div style="padding: 20px 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%); border-radius: 12px; margin-bottom: 12px; border: 2px solid rgba(102, 126, 234, 0.2);">
+                        <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 16px; color: #667eea; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 24px;">👤</span> {{ usuario.nombre }}
+                        </p>
+                        <p style="margin: 6px 0 0 32px; font-family: 'Poppins', sans-serif; font-size: 12px; color: #666; word-break: break-all;">
+                            {{ usuario.email }}
+                        </p>
+                    </div>
+                    
+                    <!-- Opciones para usuarios logueados -->
+                    <a href="#" data-seccion="perfil">👤 Perfil</a>
+                    <a href="/mis-clases">📚 Mis clases</a>
+                    <a href="/certificados">🎓 Certificados</a>
+                    <a href="/formulario-ayuda">📝 Formulario de ayuda</a>
+                    <a href="/notificaciones">🔔 Notificaciones</a>
+                    <a href="/eventos">📅 Eventos</a>
+                    <a href="/podcast">🎧 Podcast / Audios</a>
+                    <a href="/logout" onclick="return confirmarCierreSesion(event)">🚪 Cerrar sesión</a>
+                {% else %}
+                    <!-- Opciones para usuarios no logueados -->
+                    <a href="#" onclick="cargarLoginEnContenedor(); toggleMenu(); return false;">🔑 Iniciar sesión</a>
+                    <a href="/registro">📝 Registrarse</a>
+                    <a href="/eventos">📅 Eventos</a>
+                    <a href="/podcast">🎧 Podcast / Audios</a>
+                {% endif %}
+            </div>
+        </div>
+        
         <div class="logo-container">
             <img src="/static/logo.gif" alt="Logo Berakah Emeth" class="logo">
             <div class="header-text">
@@ -1111,42 +1212,6 @@
         <a href="#" data-seccion="testimonios">Testimonios</a>
         <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
         <a href="#" data-seccion="madre">40 Formas de ser Madre</a>
-    </div>
-
-    <!-- Avatar de Usuario (sustituye hamburguesa) -->
-    <div class="avatar-container">
-        <div class="avatar-usuario {% if usuario and usuario.genero == 'mujer' %}avatar-mujer{% else %}avatar-hombre{% endif %}" onclick="toggleMenu()">
-            <span class="avatar-icon">👤</span>
-        </div>
-        <div class="menu-oculto" id="menuOculto">
-            {% if usuario %}
-                <!-- Perfil del usuario en el menú -->
-                <div style="padding: 20px 16px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%); border-radius: 12px; margin-bottom: 12px; border: 2px solid rgba(102, 126, 234, 0.2);">
-                    <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 16px; color: #667eea; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 24px;">👤</span> {{ usuario.nombre }}
-                    </p>
-                    <p style="margin: 6px 0 0 32px; font-family: 'Poppins', sans-serif; font-size: 12px; color: #666; word-break: break-all;">
-                        {{ usuario.email }}
-                    </p>
-                </div>
-                
-                <!-- Opciones para usuarios logueados -->
-                <a href="#" data-seccion="perfil">👤 Perfil</a>
-                <a href="/mis-clases">📚 Mis clases</a>
-                <a href="/certificados">🎓 Certificados</a>
-                <a href="/formulario-ayuda">📝 Formulario de ayuda</a>
-                <a href="/notificaciones">🔔 Notificaciones</a>
-                <a href="/eventos">📅 Eventos</a>
-                <a href="/podcast">🎧 Podcast / Audios</a>
-                <a href="/logout" onclick="return confirmarCierreSesion(event)">🚪 Cerrar sesión</a>
-            {% else %}
-                <!-- Opciones para usuarios no logueados -->
-                <a href="#" onclick="cargarLoginEnContenedor(); toggleMenu(); return false;">🔑 Iniciar sesión</a>
-                <a href="/registro">📝 Registrarse</a>
-                <a href="/eventos">📅 Eventos</a>
-                <a href="/podcast">🎧 Podcast / Audios</a>
-            {% endif %}
-        </div>
     </div>
 
     <!-- Mensajes Flash -->
