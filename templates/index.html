@@ -849,6 +849,14 @@
                 padding: 30px 20px;
                 grid-column: 1 / -1;
             }
+
+            .card-servidores h2 {
+                font-size: 22px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+                line-height: 1.3;
+            }
             
             /* Tarjetas extras: 1 y 3 en columnas, 2 centrada debajo */
             #card-extra3 {
@@ -1151,6 +1159,11 @@
             animation: slideInRight 0.5s ease-out;
         }
     </style>
+    
+    <!-- Librerías para exportar archivos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -1212,6 +1225,7 @@
         <a href="#" data-seccion="testimonios">Testimonios</a>
         <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
         <a href="#" data-seccion="madre">40 Formas de ser Madre</a>
+        <a href="#" data-seccion="subir-notas" onclick="validarProfesor(event)">📝 Sube tus notas</a>
     </div>
 
     <!-- Mensajes Flash -->
@@ -1562,6 +1576,194 @@
         </div>
     </div>
 
+    <!-- Sección: Subir Notas (Profesores) -->
+    <div id="subir-notas" style="display: none; width: 100%; padding: 40px 20px; box-sizing: border-box; min-height: 100vh;">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border: 2px solid rgba(102, 126, 234, 0.2); border-radius: 20px; padding: 40px; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);">
+                
+                <h1 style="font-family: 'Poppins', sans-serif; font-size: 36px; color: #667eea; margin-bottom: 10px; text-align: center;">
+                    📝 Registro de Notas
+                </h1>
+                <p style="text-align: center; color: #666; font-size: 16px; margin-bottom: 40px;">
+                    Gestiona las notas de tus alumnos de forma fácil e intuitiva
+                </p>
+
+                <!-- Paso 1: Seleccionar Curso -->
+                <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 30px;">
+                    <h2 style="font-size: 22px; color: #667eea; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        📚 Paso 1: Selecciona el Curso
+                    </h2>
+                    <select id="curso-selector" onchange="mostrarConfiguracion()" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; font-family: 'Poppins', sans-serif; cursor: pointer;">
+                        <option value="">-- Seleccione un curso --</option>
+                        <option value="doctrina-revelacion">Doctrina de la Revelación Bíblica</option>
+                        <option value="doctrina-dios">Doctrina de Dios (Teología Propia)</option>
+                        <option value="doctrina-creacion">Doctrina de la Creación</option>
+                        <option value="doctrina-hombre">Doctrina del Hombre (Antropología)</option>
+                        <option value="doctrina-pecado">Doctrina del Pecado (Hamartiología)</option>
+                        <option value="doctrina-cristo">Doctrina de Cristo (Cristología)</option>
+                        <option value="doctrina-salvacion">Doctrina de la Salvación (Soteriología)</option>
+                        <option value="doctrina-espiritu-santo">Doctrina del Espíritu Santo (Neumatología)</option>
+                        <option value="doctrina-iglesia">Doctrina de la Iglesia (Eclesiología)</option>
+                        <option value="doctrina-etica">Doctrina de la Ética Cristiana</option>
+                        <option value="doctrina-ultimos-tiempos">Doctrina de los Últimos Tiempos (Escatología)</option>
+                        <option value="teologia-comparada">Teología Comparada</option>
+                        <option value="caracter-dios">Carácter de Dios</option>
+                        <option value="caracter-jesus">Carácter de Jesús</option>
+                        <option value="caracter-espiritu-santo">Carácter del Espíritu Santo</option>
+                        <option value="disciplinas">Disciplinas</option>
+                        <option value="sanidad-interior">Sanidad Interior</option>
+                    </select>
+                </div>
+
+                <!-- Paso 2: Configurar Tabla -->
+                <div id="contenedor-configuracion" style="display: none;">
+                    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 30px;">
+                        <h2 style="font-size: 22px; color: #667eea; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            ⚙️ Paso 2: Configura tu Tabla
+                        </h2>
+                        <p style="color: #666; margin-bottom: 25px;">Define cuántos alumnos y columnas de notas necesitas</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 25px;">
+                            <!-- Contador de alumnos -->
+                            <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%); padding: 20px; border-radius: 12px; border: 2px solid #e0e0e0;">
+                                <label style="display: block; font-weight: 600; color: #667eea; margin-bottom: 10px; font-size: 16px;">
+                                    👥 Número de Alumnos
+                                </label>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <button type="button" onclick="cambiarCantidad('alumnos', -1)" style="width: 45px; height: 45px; background: white; border: 2px solid #667eea; border-radius: 10px; color: #667eea; font-size: 24px; font-weight: bold; cursor: pointer; transition: all 0.3s;">-</button>
+                                    <input type="number" id="cantidad-alumnos" value="10" min="1" max="100" readonly style="width: 80px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 20px; font-weight: 600; text-align: center; font-family: 'Poppins', sans-serif; background: white;">
+                                    <button type="button" onclick="cambiarCantidad('alumnos', 1)" style="width: 45px; height: 45px; background: white; border: 2px solid #667eea; border-radius: 10px; color: #667eea; font-size: 24px; font-weight: bold; cursor: pointer; transition: all 0.3s;">+</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Contador de notas -->
+                            <div style="background: linear-gradient(135deg, rgba(118, 75, 162, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%); padding: 20px; border-radius: 12px; border: 2px solid #e0e0e0;">
+                                <label style="display: block; font-weight: 600; color: #764ba2; margin-bottom: 10px; font-size: 16px;">
+                                    📊 Número de Notas
+                                </label>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <button type="button" onclick="cambiarCantidad('notas', -1)" style="width: 45px; height: 45px; background: white; border: 2px solid #764ba2; border-radius: 10px; color: #764ba2; font-size: 24px; font-weight: bold; cursor: pointer; transition: all 0.3s;">-</button>
+                                    <input type="number" id="cantidad-notas" value="4" min="1" max="20" readonly style="width: 80px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 20px; font-weight: 600; text-align: center; font-family: 'Poppins', sans-serif; background: white;">
+                                    <button type="button" onclick="cambiarCantidad('notas', 1)" style="width: 45px; height: 45px; background: white; border: 2px solid #764ba2; border-radius: 10px; color: #764ba2; font-size: 24px; font-weight: bold; cursor: pointer; transition: all 0.3s;">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" onclick="generarTabla()" style="width: 100%; padding: 18px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
+                            ✅ Generar Tabla
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Tabla de Notas Editable -->
+                <div id="contenedor-tabla" style="display: none;">
+                    
+                    <!-- Controles superiores -->
+                    <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                        <div>
+                            <h2 style="font-size: 22px; color: #667eea; margin: 0; display: flex; align-items: center; gap: 10px;">
+                                ✏️ Paso 3: Edita las Notas
+                            </h2>
+                            <p style="margin: 5px 0 0 0; color: #999; font-size: 14px;">Escribe directamente en las casillas (totalmente editable)</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" onclick="agregarFilaAlumno()" style="padding: 12px 20px; background: #667eea; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: all 0.3s;">
+                                ➕ Agregar Alumno
+                            </button>
+                            <button type="button" onclick="agregarColumnaNotaManual()" style="padding: 12px 20px; background: #764ba2; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3); transition: all 0.3s;">
+                                ➕ Agregar Nota
+                            </button>
+                            <button type="button" onclick="guardarTodasNotas()" style="padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); transition: all 0.3s;">
+                                💾 Guardar Todo
+                            </button>
+                            <button type="button" onclick="volverConfiguracion()" style="padding: 12px 20px; background: white; border: 2px solid #667eea; color: #667eea; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s;">
+                                ⚙️ Reconfigurar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabla responsive con scroll horizontal -->
+                    <div style="background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); overflow: hidden;">
+                        <div style="overflow-x: auto; max-width: 100%;">
+                            <table id="tabla-notas" style="width: 100%; border-collapse: collapse; min-width: 800px;">
+                                <thead id="thead-notas" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                    <tr>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2); width: 50px; position: sticky; left: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 10;">#</th>
+                                        <th style="padding: 15px; text-align: left; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2); min-width: 200px; position: sticky; left: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 10;">
+                                            Alumno
+                                            <button onclick="eliminarColumna(0)" style="float: right; background: rgba(231, 76, 60, 0.2); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; margin-left: 10px;" title="Eliminar columna Alumno">×</button>
+                                        </th>
+                                        <th style="padding: 15px; text-align: left; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2); min-width: 200px;">
+                                            Email
+                                            <button onclick="eliminarColumna(1)" style="float: right; background: rgba(231, 76, 60, 0.2); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; margin-left: 10px;" title="Eliminar columna Email">×</button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-notas">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- PASO 3: Enviar por Email -->
+                    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 30px;">
+                        <h2 style="font-size: 22px; color: #667eea; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            📧 Paso 3: Enviar Notas por Email
+                        </h2>
+                        <p style="color: #666; margin-bottom: 20px;">Envía la tabla de notas al director o coordinador académico</p>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr auto; gap: 15px; align-items: end;">
+                            <div>
+                                <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px;">
+                                    📬 Email del destinatario
+                                </label>
+                                <input type="email" id="email-destinatario" placeholder="director@ejemplo.com" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+                            </div>
+                            <button type="button" onclick="enviarNotasPorEmail()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); transition: all 0.3s; white-space: nowrap;">
+                                📧 Enviar Email
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PASO 4: Generar Archivos -->
+                    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 30px;">
+                        <h2 style="font-size: 22px; color: #667eea; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            📥 Paso 4: Descargar Tabla
+                        </h2>
+                        <p style="color: #666; margin-bottom: 20px;">Exporta la tabla de notas en diferentes formatos</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                            <button type="button" onclick="descargarComoExcel()" style="padding: 15px 20px; background: #1D6F42; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(29, 111, 66, 0.3); transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span style="font-size: 20px;">📊</span> Excel
+                            </button>
+                            <button type="button" onclick="descargarComoPDF()" style="padding: 15px 20px; background: #D32F2F; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3); transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span style="font-size: 20px;">📄</span> PDF
+                            </button>
+                            <button type="button" onclick="descargarComoImagen()" style="padding: 15px 20px; background: #1976D2; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3); transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span style="font-size: 20px;">🖼️</span> Imagen
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Botón volver -->
+                    <div style="margin-top: 30px; text-align: center;">
+                        <button type="button" onclick="document.querySelector('[data-seccion=inicio]').click()" style="padding: 15px 40px; border: 2px solid #667eea; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; background: white; color: #667eea; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;">
+                            ↩️ Volver al Inicio
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Formulario oculto para enviar datos -->
+                <form id="form-notas-oculto" action="/guardar-notas-tabla" method="POST" style="display: none;">
+                    <input type="hidden" name="curso_id" id="input-curso-id">
+                    <textarea name="datos_notas" id="input-datos-notas"></textarea>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
     <!-- Modales -->
     <div id="modal" class="modal">
         <div class="modal-content">
@@ -1623,6 +1825,478 @@
                 return false;
             {% endif %}
         }
+
+        function validarProfesor(event) {
+            {% if not usuario %}
+                event.preventDefault();
+                cargarLoginEnContenedor();
+                return false;
+            {% else %}
+                // Aquí validaremos si el usuario es profesor
+                // Por ahora permitimos acceso a todos los usuarios logueados
+                // TODO: Agregar rol de profesor en la base de datos
+            {% endif %}
+        }
+
+        // ========== SISTEMA DE NOTAS INTERACTIVO ==========
+        
+        let contadorColumnas = 0;
+        let contadorFilas = 0;
+        
+        function mostrarConfiguracion() {
+            const cursoId = document.getElementById('curso-selector').value;
+            if (cursoId) {
+                document.getElementById('contenedor-configuracion').style.display = 'block';
+                document.getElementById('input-curso-id').value = cursoId;
+            } else {
+                document.getElementById('contenedor-configuracion').style.display = 'none';
+            }
+        }
+        
+        function cambiarCantidad(tipo, cambio) {
+            const input = document.getElementById(`cantidad-${tipo}`);
+            let valor = parseInt(input.value) + cambio;
+            
+            if (tipo === 'alumnos') {
+                valor = Math.max(1, Math.min(100, valor));
+            } else if (tipo === 'notas') {
+                valor = Math.max(1, Math.min(20, valor));
+            }
+            
+            input.value = valor;
+        }
+        
+        function generarTabla() {
+            const cursoId = document.getElementById('curso-selector').value;
+            if (!cursoId) {
+                alert('⚠️ Primero selecciona un curso');
+                return;
+            }
+            
+            const cantidadAlumnos = parseInt(document.getElementById('cantidad-alumnos').value);
+            const cantidadNotas = parseInt(document.getElementById('cantidad-notas').value);
+            
+            // Ocultar configuración, mostrar tabla
+            document.getElementById('contenedor-configuracion').style.display = 'none';
+            document.getElementById('contenedor-tabla').style.display = 'block';
+            document.getElementById('input-curso-id').value = cursoId;
+            
+            // Limpiar tabla
+            const thead = document.getElementById('thead-notas').querySelector('tr');
+            const tbody = document.getElementById('tbody-notas');
+            
+            // Limpiar encabezados (mantener #, Alumno, Email)
+            while (thead.children.length > 3) {
+                thead.removeChild(thead.lastChild);
+            }
+            
+            tbody.innerHTML = '';
+            contadorColumnas = 0;
+            contadorFilas = 0;
+            
+            // Agregar columnas de notas
+            for (let i = 1; i <= cantidadNotas; i++) {
+                agregarColumnaNotaManual();
+            }
+            
+            // Agregar filas de alumnos
+            for (let i = 1; i <= cantidadAlumnos; i++) {
+                agregarFilaAlumno();
+            }
+        }
+        
+        function volverConfiguracion() {
+            if (!confirm('¿Regresar a la configuración? Se perderán los datos no guardados.')) {
+                return;
+            }
+            document.getElementById('contenedor-tabla').style.display = 'none';
+            document.getElementById('contenedor-configuracion').style.display = 'block';
+        }
+        
+        function agregarFilaAlumno() {
+            const tbody = document.getElementById('tbody-notas');
+            const thead = document.getElementById('thead-notas').querySelector('tr');
+            const numColumnas = thead.children.length;
+            
+            contadorFilas++;
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid #e0e0e0';
+            tr.dataset.filaId = contadorFilas;
+            
+            // Columna de número
+            const tdNum = document.createElement('td');
+            tdNum.style.cssText = 'text-align: center; padding: 12px; font-weight: 600; color: #667eea; position: sticky; left: 0; background: white; z-index: 9; border-right: 1px solid #e0e0e0;';
+            tdNum.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <span>${contadorFilas}</span>
+                    <button onclick="eliminarFila(${contadorFilas})" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 14px; padding: 0; display: flex; align-items: center; justify-content: center;" title="Eliminar fila">×</button>
+                </div>
+            `;
+            tr.appendChild(tdNum);
+            
+            // Columna de Alumno (editable)
+            const tdNombre = document.createElement('td');
+            tdNombre.style.cssText = 'padding: 8px; position: sticky; left: 50px; background: white; z-index: 9; border-right: 1px solid #e0e0e0;';
+            tdNombre.innerHTML = `<input type="text" placeholder="Nombre del alumno" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif;">`;
+            tr.appendChild(tdNombre);
+            
+            // Columna de Email (editable)
+            const tdEmail = document.createElement('td');
+            tdEmail.style.cssText = 'padding: 8px; border-right: 1px solid #e0e0e0;';
+            tdEmail.innerHTML = `<input type="email" placeholder="email@ejemplo.com" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif;">`;
+            tr.appendChild(tdEmail);
+            
+            // Columnas de notas (agregar tantas como existan)
+            for (let i = 3; i < numColumnas; i++) {
+                const tdNota = document.createElement('td');
+                tdNota.style.cssText = 'padding: 8px; border-right: 1px solid #e0e0e0;';
+                tdNota.innerHTML = `<input type="number" class="nota-input" data-columna="${i - 2}" min="0" max="100" step="0.1" placeholder="0-100" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; text-align: center; font-family: 'Poppins', sans-serif;">`;
+                tr.appendChild(tdNota);
+            }
+            
+            tbody.appendChild(tr);
+        }
+        
+        function agregarColumnaNotaManual() {
+            const tbody = document.getElementById('tbody-notas');
+            const rows = tbody.querySelectorAll('tr');
+            
+            contadorColumnas++;
+            const nombreColumna = `Nota ${contadorColumnas}`;
+            
+            // Agregar encabezado
+            const thead = document.getElementById('thead-notas').querySelector('tr');
+            const th = document.createElement('th');
+            th.style.cssText = 'padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2); min-width: 120px;';
+            th.dataset.columnaId = contadorColumnas;
+            th.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>${nombreColumna}</span>
+                    <button onclick="eliminarColumna(${contadorColumnas})" style="background: rgba(231, 76, 60, 0.2); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center;" title="Eliminar columna">×</button>
+                </div>
+            `;
+            thead.appendChild(th);
+            
+            // Agregar celda de input a cada fila existente
+            rows.forEach(row => {
+                const td = document.createElement('td');
+                td.style.cssText = 'padding: 8px; border-right: 1px solid #e0e0e0;';
+                td.innerHTML = `<input type="number" class="nota-input" data-columna="${contadorColumnas}" min="0" max="100" step="0.1" placeholder="0-100" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; text-align: center; font-family: 'Poppins', sans-serif;">`;
+                row.appendChild(td);
+            });
+        }
+        
+        function eliminarFila(filaId) {
+            if (!confirm('¿Eliminar esta fila?')) {
+                return;
+            }
+            const tbody = document.getElementById('tbody-notas');
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                if (row.dataset.filaId == filaId) {
+                    row.remove();
+                }
+            });
+            renumerarFilas();
+        }
+        
+        function renumerarFilas() {
+            const tbody = document.getElementById('tbody-notas');
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                const primeraCelda = row.querySelector('td');
+                const span = primeraCelda.querySelector('span');
+                if (span) {
+                    span.textContent = index + 1;
+                }
+            });
+        }
+        
+        function eliminarColumna(columnaId) {
+            if (!confirm('¿Eliminar esta columna?')) {
+                return;
+            }
+            
+            // Eliminar encabezado
+            const thead = document.getElementById('thead-notas').querySelector('tr');
+            const headers = thead.querySelectorAll('th');
+            headers.forEach(th => {
+                if (th.dataset.columnaId == columnaId) {
+                    const index = Array.from(thead.children).indexOf(th);
+                    th.remove();
+                    
+                    // Eliminar celdas correspondientes en todas las filas
+                    const tbody = document.getElementById('tbody-notas');
+                    const rows = tbody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        if (row.children[index]) {
+                            row.children[index].remove();
+                        }
+                    });
+                }
+            });
+        }
+        
+        function guardarTodasNotas() {
+            const cursoId = document.getElementById('curso-selector').value;
+            if (!cursoId) {
+                alert('⚠️ Selecciona un curso primero');
+                return;
+            }
+            
+            const tbody = document.getElementById('tbody-notas');
+            const rows = tbody.querySelectorAll('tr');
+            
+            if (rows.length === 0) {
+                alert('⚠️ No hay alumnos para guardar notas');
+                return;
+            }
+            
+            // Construir estructura de datos desde la tabla editable
+            const datosNotas = [];
+            let hayDatos = false;
+            let errores = [];
+            
+            rows.forEach((row, index) => {
+                const celdas = row.querySelectorAll('td');
+                if (celdas.length < 3) return;
+                
+                // Obtener nombre y email de los inputs
+                const inputNombre = celdas[1].querySelector('input');
+                const inputEmail = celdas[2].querySelector('input');
+                
+                if (!inputNombre || !inputEmail) return;
+                
+                const nombre = inputNombre.value.trim();
+                const email = inputEmail.value.trim();
+                
+                // Validar que tenga al menos nombre
+                if (!nombre) {
+                    errores.push(`Fila ${index + 1}: Falta el nombre del alumno`);
+                    return;
+                }
+                
+                // Recoger notas
+                const notasAlumno = [];
+                const inputsNotas = row.querySelectorAll('.nota-input');
+                
+                inputsNotas.forEach(input => {
+                    const valor = input.value.trim();
+                    if (valor !== '') {
+                        const nota = parseFloat(valor);
+                        if (nota < 0 || nota > 100) {
+                            errores.push(`Fila ${index + 1}: Nota fuera de rango (0-100)`);
+                        } else {
+                            hayDatos = true;
+                            notasAlumno.push({
+                                columna: parseInt(input.dataset.columna),
+                                nota: nota
+                            });
+                        }
+                    }
+                });
+                
+                if (notasAlumno.length > 0) {
+                    datosNotas.push({
+                        nombre: nombre,
+                        email: email || '',
+                        notas: notasAlumno
+                    });
+                }
+            });
+            
+            // Mostrar errores si existen
+            if (errores.length > 0) {
+                alert('⚠️ Errores encontrados:\n\n' + errores.join('\n'));
+                return;
+            }
+            
+            if (!hayDatos) {
+                alert('⚠️ No has ingresado ninguna nota. Escribe al menos una nota antes de guardar.');
+                return;
+            }
+            
+            // Confirmar antes de guardar
+            const totalNotas = datosNotas.reduce((acc, alumno) => acc + alumno.notas.length, 0);
+            if (!confirm(`¿Guardar ${datosNotas.length} alumno(s) con ${totalNotas} nota(s) en total?`)) {
+                return;
+            }
+            
+            // Enviar al backend
+            document.getElementById('input-datos-notas').value = JSON.stringify(datosNotas);
+            document.getElementById('form-notas-oculto').submit();
+        }
+        
+        // ========== PASO 3: ENVIAR POR EMAIL ==========
+        
+        function enviarNotasPorEmail() {
+            const emailDestinatario = document.getElementById('email-destinatario').value.trim();
+            if (!emailDestinatario) {
+                alert('⚠️ Por favor ingresa un email válido');
+                return;
+            }
+            
+            if (!emailDestinatario.includes('@')) {
+                alert('⚠️ El email no es válido');
+                return;
+            }
+            
+            const cursoId = document.getElementById('curso-selector').value;
+            const cursoTexto = document.getElementById('curso-selector').options[document.getElementById('curso-selector').selectedIndex].text;
+            
+            // Recopilar datos de la tabla
+            const tbody = document.getElementById('tbody-notas');
+            const rows = tbody.querySelectorAll('tr');
+            
+            if (rows.length === 0) {
+                alert('⚠️ No hay datos en la tabla para enviar');
+                return;
+            }
+            
+            const datosTabla = [];
+            const thead = document.getElementById('thead-notas').querySelector('tr');
+            const encabezados = Array.from(thead.querySelectorAll('th')).map(th => th.textContent.trim().replace('×', ''));
+            
+            rows.forEach(row => {
+                const celdas = row.querySelectorAll('td');
+                if (celdas.length >= 3) {
+                    const fila = [];
+                    celdas.forEach((celda, index) => {
+                        const input = celda.querySelector('input');
+                        if (input) {
+                            fila.push(input.value || '');
+                        } else {
+                            fila.push(celda.textContent.trim().replace('×', ''));
+                        }
+                    });
+                    datosTabla.push(fila);
+                }
+            });
+            
+            // Enviar al backend
+            fetch('/enviar-notas-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email_destinatario: emailDestinatario,
+                    curso: cursoTexto,
+                    encabezados: encabezados,
+                    datos: datosTabla
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Email enviado exitosamente a ' + emailDestinatario);
+                } else {
+                    alert('❌ Error al enviar email: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error al enviar email');
+            });
+        }
+        
+        // ========== PASO 4: GENERAR ARCHIVOS ==========
+        
+        function descargarComoExcel() {
+            const tbody = document.getElementById('tbody-notas');
+            const rows = tbody.querySelectorAll('tr');
+            
+            if (rows.length === 0) {
+                alert('⚠️ No hay datos en la tabla para exportar');
+                return;
+            }
+            
+            // Obtener encabezados
+            const thead = document.getElementById('thead-notas').querySelector('tr');
+            const encabezados = Array.from(thead.querySelectorAll('th')).map(th => th.textContent.trim().replace('×', ''));
+            
+            // Obtener datos
+            const datos = [];
+            datos.push(encabezados);
+            
+            rows.forEach(row => {
+                const celdas = row.querySelectorAll('td');
+                if (celdas.length >= 3) {
+                    const fila = [];
+                    celdas.forEach((celda, index) => {
+                        const input = celda.querySelector('input');
+                        if (input) {
+                            fila.push(input.value || '');
+                        } else {
+                            fila.push(celda.textContent.trim().replace('×', ''));
+                        }
+                    });
+                    datos.push(fila);
+                }
+            });
+            
+            // Crear libro de Excel
+            const ws = XLSX.utils.aoa_to_sheet(datos);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Notas");
+            
+            // Descargar
+            const cursoTexto = document.getElementById('curso-selector').options[document.getElementById('curso-selector').selectedIndex].text;
+            XLSX.writeFile(wb, `Notas_${cursoTexto}_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+        
+        function descargarComoPDF() {
+            const tabla = document.getElementById('tabla-notas');
+            
+            if (!tabla || tabla.querySelector('tbody').children.length === 0) {
+                alert('⚠️ No hay datos en la tabla para exportar');
+                return;
+            }
+            
+            const { jsPDF } = window.jspdf;
+            
+            html2canvas(tabla, {
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'px',
+                    format: [canvas.width, canvas.height]
+                });
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                
+                const cursoTexto = document.getElementById('curso-selector').options[document.getElementById('curso-selector').selectedIndex].text;
+                pdf.save(`Notas_${cursoTexto}_${new Date().toISOString().split('T')[0]}.pdf`);
+            });
+        }
+        
+        function descargarComoImagen() {
+            const tabla = document.getElementById('tabla-notas');
+            
+            if (!tabla || tabla.querySelector('tbody').children.length === 0) {
+                alert('⚠️ No hay datos en la tabla para exportar');
+                return;
+            }
+            
+            html2canvas(tabla, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const cursoTexto = document.getElementById('curso-selector').options[document.getElementById('curso-selector').selectedIndex].text;
+                link.download = `Notas_${cursoTexto}_${new Date().toISOString().split('T')[0]}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+        
+        // ========== FIN SISTEMA DE NOTAS INTERACTIVO ==========
         
         function cargarLoginEnContenedor() {
             // Primero mostrar la sección universidad
@@ -2245,6 +2919,71 @@
                     }, 500);
                 }, 5000);
             });
+        });
+
+        // Funciones para subir notas
+        function toggleMetodo(metodo) {
+            const metodoArchivo = document.getElementById('metodo-archivo');
+            const metodoManual = document.getElementById('metodo-manual');
+            
+            if (metodo === 'archivo') {
+                metodoArchivo.style.display = 'block';
+                metodoManual.style.display = 'none';
+            } else {
+                metodoArchivo.style.display = 'none';
+                metodoManual.style.display = 'block';
+            }
+        }
+
+        function mostrarNombreArchivo(input) {
+            const nombreArchivo = document.getElementById('nombre-archivo');
+            if (input.files && input.files[0]) {
+                nombreArchivo.textContent = '✅ Archivo seleccionado: ' + input.files[0].name;
+            } else {
+                nombreArchivo.textContent = '';
+            }
+        }
+
+        function agregarFilaNota() {
+            const container = document.getElementById('notas-manuales');
+            const nuevaFila = document.createElement('div');
+            nuevaFila.style.cssText = 'display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: center;';
+            nuevaFila.innerHTML = `
+                <input type="email" placeholder="email@alumno.com" style="padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                <input type="number" placeholder="Nota (0-100)" min="0" max="100" step="0.1" style="padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                <button type="button" onclick="this.parentElement.remove()" style="padding: 12px 20px; background: #ff4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">🗑️</button>
+            `;
+            container.appendChild(nuevaFila);
+        }
+
+        // Drag and drop para archivos
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.querySelector('[onclick*="archivo-notas"]');
+            if (dropZone) {
+                dropZone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.style.background = 'rgba(102, 126, 234, 0.15)';
+                    this.style.borderColor = '#764ba2';
+                });
+
+                dropZone.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.style.background = 'rgba(102, 126, 234, 0.05)';
+                    this.style.borderColor = '#667eea';
+                });
+
+                dropZone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.style.background = 'rgba(102, 126, 234, 0.05)';
+                    this.style.borderColor = '#667eea';
+                    
+                    const fileInput = document.getElementById('archivo-notas');
+                    if (e.dataTransfer.files.length > 0) {
+                        fileInput.files = e.dataTransfer.files;
+                        mostrarNombreArchivo(fileInput);
+                    }
+                });
+            }
         });
     </script>
 </body>

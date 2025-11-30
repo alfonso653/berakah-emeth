@@ -1,8 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Usuario, ClaseCompletada
+from models import db, Usuario, ClaseCompletada, Curso, Nota, CargaNota
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_mail import Mail, Message
 from functools import wraps
+from datetime import datetime
 
 app = Flask(__name__)
 # Usar SQLite para desarrollo local, PostgreSQL para producción
@@ -2309,9 +2310,15 @@ def home():
                 'telefono': usuario_db.telefono,
                 'ciudad': usuario_db.ciudad,
                 'pais': usuario_db.pais,
-                'es_admin': usuario_db.es_admin
+                'es_admin': usuario_db.es_admin,
+                'es_profesor': usuario_db.es_profesor,
+                'genero': usuario_db.genero
             }
-    return render_template('index.html', secciones=secciones, usuario=usuario_logueado)
+    
+    # Obtener cursos disponibles para el selector de notas
+    cursos_disponibles = Curso.query.filter_by(activo=True).all()
+    
+    return render_template('index.html', secciones=secciones, usuario=usuario_logueado, cursos=cursos_disponibles)
 
 @app.route('/clase/<slug>')
 @login_required
@@ -2448,7 +2455,7 @@ def api_actualizar_perfil():
 # Crear la base de datos si no existe
 with app.app_context():
     db.create_all()
-    print("✅ Base de datos inicializada correctamente")
+    print("Base de datos inicializada correctamente")
 @app.route('/restablecer', methods=['GET', 'POST'])
 def restablecer():
     if request.method == 'POST':
@@ -2599,6 +2606,448 @@ def obtener_progreso_general():
         'success': True,
         'progreso': progreso_cursos
     })
+
+
+# ============================================
+# SISTEMA DE GESTIÓN DE NOTAS (PROFESORES)
+# ============================================
+
+@app.route('/subir-notas', methods=['POST'])
+@login_required
+def subir_notas():
+    from models import Curso, Nota, CargaNota
+    import pandas as pd
+    from werkzeug.utils import secure_filename
+    import os
+    
+    try:
+        usuario = Usuario.query.get(session['usuario_id'])
+        
+        # Por ahora permitimos a todos los usuarios logueados
+        # TODO: Validar que sea profesor (usuario.es_profesor == True)
+        
+        curso_id = request.form.get('curso_id')
+        tipo_evaluacion = request.form.get('tipo_evaluacion')
+        metodo = request.form.get('metodo')
+        
+        if not curso_id or not tipo_evaluacion:
+            flash('⚠️ Debe seleccionar un curso y tipo de evaluación', 'error')
+            return redirect(url_for('home'))
+        
+        notas_procesadas = []
+        
+        if metodo == 'archivo':
+            # Procesar archivo Excel/CSV
+            if 'archivo_notas' not in request.files:
+                flash('⚠️ No se encontró archivo', 'error')
+                return redirect(url_for('home'))
+            
+            archivo = request.files['archivo_notas']
+            
+            if archivo.filename == '':
+                flash('⚠️ No se seleccionó archivo', 'error')
+                return redirect(url_for('home'))
+            
+            if archivo:
+                # Guardar archivo temporalmente
+                filename = secure_filename(archivo.filename)
+                upload_folder = os.path.join(app.root_path, 'uploads', 'notas')
+                os.makedirs(upload_folder, exist_ok=True)
+                filepath = os.path.join(upload_folder, filename)
+                archivo.save(filepath)
+                
+                try:
+                    # Leer archivo con pandas
+                    if filename.endswith('.csv'):
+                        df = pd.read_csv(filepath)
+                    else:
+                        df = pd.read_excel(filepath)
+                    
+                    # Validar columnas esperadas
+                    columnas_esperadas = ['email', 'nombre', 'nota']
+                    if not all(col in df.columns.str.lower() for col in columnas_esperadas):
+                        flash('⚠️ El archivo debe tener columnas: Email, Nombre, Nota', 'error')
+                        return redirect(url_for('home'))
+                    
+                    # Normalizar nombres de columnas
+                    df.columns = df.columns.str.lower()
+                    
+                    # Procesar cada fila
+                    for _, row in df.iterrows():
+                        email = str(row['email']).strip()
+                        nota_valor = float(row['nota'])
+                        
+                        # Validar nota
+                        if nota_valor < 0 or nota_valor > 100:
+                            flash(f'⚠️ Nota inválida para {email}: {nota_valor}', 'warning')
+                            continue
+                        
+                        # Buscar alumno por email
+                        alumno = Usuario.query.filter_by(email=email).first()
+                        if not alumno:
+                            flash(f'⚠️ Alumno no encontrado: {email}', 'warning')
+                            continue
+                        
+                        # Verificar si ya existe nota
+                        nota_existente = Nota.query.filter_by(
+                            alumno_id=alumno.id,
+                            curso_id=curso_id,
+                            tipo_evaluacion=tipo_evaluacion
+                        ).first()
+                        
+                        if nota_existente:
+                            # Actualizar nota existente
+                            nota_existente.nota = nota_valor
+                            nota_existente.profesor_id = usuario.id
+                            nota_existente.fecha_modificacion = datetime.utcnow()
+                        else:
+                            # Crear nueva nota
+                            nueva_nota = Nota(
+                                alumno_id=alumno.id,
+                                curso_id=curso_id,
+                                profesor_id=usuario.id,
+                                tipo_evaluacion=tipo_evaluacion,
+                                nota=nota_valor
+                            )
+                            db.session.add(nueva_nota)
+                        
+                        notas_procesadas.append(email)
+                    
+                    # Registrar la carga
+                    carga = CargaNota(
+                        profesor_id=usuario.id,
+                        curso_id=curso_id,
+                        tipo_evaluacion=tipo_evaluacion,
+                        metodo='archivo',
+                        archivo_original=filename,
+                        cantidad_notas=len(notas_procesadas)
+                    )
+                    db.session.add(carga)
+                    db.session.commit()
+                    
+                    flash(f'✅ Se procesaron {len(notas_procesadas)} notas correctamente', 'success')
+                    
+                except Exception as e:
+                    flash(f'❌ Error al procesar archivo: {str(e)}', 'error')
+                    db.session.rollback()
+                
+                finally:
+                    # Limpiar archivo temporal
+                    if os.path.exists(filepath):
+                        os.remove(filepath)
+        
+        elif metodo == 'manual':
+            # TODO: Implementar ingreso manual de notas
+            flash('⚠️ Ingreso manual en desarrollo', 'info')
+        
+        return redirect(url_for('home'))
+        
+    except Exception as e:
+        flash(f'❌ Error: {str(e)}', 'error')
+        return redirect(url_for('home'))
+
+
+@app.route('/descargar-plantilla-notas')
+@login_required
+def descargar_plantilla_notas():
+    import pandas as pd
+    from io import BytesIO
+    from flask import send_file
+    
+    # Crear DataFrame de ejemplo
+    data = {
+        'Email': ['alumno1@ejemplo.com', 'alumno2@ejemplo.com', 'alumno3@ejemplo.com'],
+        'Nombre': ['Juan Pérez', 'María García', 'Pedro López'],
+        'Nota': [85.5, 92.0, 78.5]
+    }
+    df = pd.DataFrame(data)
+    
+    # Crear archivo Excel en memoria
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Notas')
+    output.seek(0)
+    
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name='plantilla_notas_berakah.xlsx'
+    )
+
+
+@app.route('/mis-notas')
+@login_required
+def ver_mis_notas():
+    from models import Nota
+    
+    usuario = Usuario.query.get(session['usuario_id'])
+    notas = Nota.query.filter_by(alumno_id=usuario.id).order_by(Nota.fecha_subida.desc()).all()
+    
+    return render_template('mis_notas.html', notas=notas, usuario=usuario)
+
+
+@app.route('/cargar-alumnos/<curso_slug>')
+@login_required
+def cargar_alumnos(curso_slug):
+    """Carga la lista de alumnos para mostrar en la tabla de notas"""
+    # Por ahora devolvemos todos los usuarios que NO son profesores
+    # TODO: Implementar sistema de inscripción para filtrar por curso específico
+    alumnos = Usuario.query.filter_by(es_profesor=False).all()
+    
+    # Formatear respuesta JSON
+    alumnos_data = [
+        {
+            'id': alumno.id,
+            'nombre': f"{alumno.nombre} {alumno.apellidos or ''}".strip(),
+            'email': alumno.email
+        }
+        for alumno in alumnos
+    ]
+    
+    return jsonify(alumnos_data)
+
+
+@app.route('/enviar-notas-email', methods=['POST'])
+@login_required
+def enviar_notas_email():
+    """Envía la tabla de notas por email"""
+    try:
+        data = request.get_json()
+        email_destinatario = data.get('email_destinatario')
+        curso = data.get('curso')
+        encabezados = data.get('encabezados', [])
+        datos = data.get('datos', [])
+        
+        if not email_destinatario or not curso:
+            return jsonify({'success': False, 'message': 'Datos incompletos'}), 400
+        
+        # Obtener usuario actual
+        usuario = Usuario.query.get(session['usuario_id'])
+        
+        # Construir HTML de la tabla
+        tabla_html = '<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">'
+        
+        # Encabezados
+        tabla_html += '<thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;"><tr>'
+        for encabezado in encabezados:
+            tabla_html += f'<th style="padding: 12px; text-align: left;">{encabezado}</th>'
+        tabla_html += '</tr></thead>'
+        
+        # Datos
+        tabla_html += '<tbody>'
+        for i, fila in enumerate(datos):
+            bg_color = '#f9f9f9' if i % 2 == 0 else '#ffffff'
+            tabla_html += f'<tr style="background: {bg_color};">'
+            for celda in fila:
+                tabla_html += f'<td style="padding: 10px; border: 1px solid #ddd;">{celda}</td>'
+            tabla_html += '</tr>'
+        tabla_html += '</tbody></table>'
+        
+        # Crear mensaje
+        msg = Message(
+            subject=f'Notas del curso: {curso}',
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[email_destinatario]
+        )
+        
+        msg.html = f"""
+        <html>
+        <head>
+            <style>
+                body {{ font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; }}
+                .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .content {{ padding: 20px; background: #f9f9f9; }}
+                .footer {{ text-align: center; padding: 15px; color: #999; font-size: 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1 style="margin: 0;">📊 Tabla de Notas</h1>
+                <p style="margin: 5px 0 0 0;">Curso: {curso}</p>
+            </div>
+            <div class="content">
+                <p>Estimado/a,</p>
+                <p>El profesor <strong>{usuario.nombre} {usuario.apellidos or ''}</strong> ha compartido la tabla de notas del curso <strong>{curso}</strong>.</p>
+                <p>A continuación se presenta el detalle:</p>
+                <br>
+                {tabla_html}
+                <br>
+                <p style="color: #666; font-size: 14px;">Fecha de envío: {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
+            </div>
+            <div class="footer">
+                <p>Este es un correo automático generado desde Berakah Emeth</p>
+                <p>berakah-emeth.org</p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        mail.send(msg)
+        
+        return jsonify({'success': True, 'message': 'Email enviado exitosamente'})
+        
+    except Exception as e:
+        print(f"Error enviando email: {str(e)}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/guardar-notas-tabla', methods=['POST'])
+@login_required
+def guardar_notas_tabla():
+    """Guarda las notas ingresadas en el sistema interactivo de tabla"""
+    from models import Nota, CargaNota, Curso
+    import json
+    from datetime import datetime
+    
+    try:
+        # Obtener datos del formulario
+        curso_slug = request.form.get('curso_id')  # En realidad es el slug
+        datos_notas_json = request.form.get('datos_notas')
+        
+        if not curso_slug or not datos_notas_json:
+            flash('Error: Datos incompletos', 'error')
+            return redirect(url_for('home'))
+        
+        # Buscar o crear el curso por slug
+        curso = Curso.query.filter_by(slug=curso_slug).first()
+        if not curso:
+            # Crear curso si no existe
+            nombres_cursos = {
+                'doctrina-revelacion': 'Doctrina de la Revelación Bíblica',
+                'doctrina-dios': 'Doctrina de Dios (Teología Propia)',
+                'doctrina-creacion': 'Doctrina de la Creación',
+                'doctrina-hombre': 'Doctrina del Hombre (Antropología)',
+                'doctrina-pecado': 'Doctrina del Pecado (Hamartiología)',
+                'doctrina-cristo': 'Doctrina de Cristo (Cristología)',
+                'doctrina-salvacion': 'Doctrina de la Salvación (Soteriología)',
+                'doctrina-espiritu-santo': 'Doctrina del Espíritu Santo (Neumatología)',
+                'doctrina-iglesia': 'Doctrina de la Iglesia (Eclesiología)',
+                'doctrina-etica': 'Doctrina de la Ética Cristiana',
+                'doctrina-ultimos-tiempos': 'Doctrina de los Últimos Tiempos (Escatología)',
+                'teologia-comparada': 'Teología Comparada',
+                'caracter-dios': 'Carácter de Dios',
+                'caracter-jesus': 'Carácter de Jesús',
+                'caracter-espiritu-santo': 'Carácter del Espíritu Santo',
+                'disciplinas': 'Disciplinas',
+                'sanidad-interior': 'Sanidad Interior'
+            }
+            curso = Curso(
+                nombre=nombres_cursos.get(curso_slug, curso_slug.replace('-', ' ').title()),
+                slug=curso_slug,
+                profesor_id=session['usuario_id'],
+                activo=True
+            )
+            db.session.add(curso)
+            db.session.flush()  # Para obtener el ID
+        
+        curso_id = curso.id
+        
+        # Validar que no haya datos vacíos antes de continuar
+        if not datos_notas_json or datos_notas_json == '[]':
+            flash('Error: Datos incompletos', 'error')
+            return redirect(url_for('home'))
+        
+        # Parsear JSON
+        datos_notas = json.loads(datos_notas_json)
+        
+        # Obtener profesor actual
+        profesor_id = session['usuario_id']
+        
+        # Contador para auditoría
+        notas_guardadas = 0
+        alumnos_creados = 0
+        
+        # Procesar cada alumno
+        for registro in datos_notas:
+            nombre = registro.get('nombre', '').strip()
+            email = registro.get('email', '').strip()
+            notas_alumno = registro['notas']
+            
+            if not nombre:
+                continue  # Saltar si no tiene nombre
+            
+            # Buscar o crear alumno
+            alumno = None
+            if email:
+                alumno = Usuario.query.filter_by(email=email).first()
+            
+            if not alumno:
+                # Crear usuario temporal para este alumno
+                alumno = Usuario(
+                    nombre=nombre,
+                    email=email if email else f"alumno{datetime.utcnow().timestamp()}@temporal.com",
+                    es_profesor=False
+                )
+                alumno.set_password('temporal123')  # Contraseña temporal
+                db.session.add(alumno)
+                db.session.flush()  # Para obtener el ID
+                alumnos_creados += 1
+            
+            alumno_id = alumno.id
+            
+            # Guardar cada nota
+            for nota_data in notas_alumno:
+                columna = nota_data['columna']
+                valor_nota = nota_data['nota']
+                tipo_evaluacion = f"Nota {columna}"
+                
+                # Buscar si ya existe la nota
+                nota_existente = Nota.query.filter_by(
+                    alumno_id=alumno_id,
+                    curso_id=curso_id,
+                    tipo_evaluacion=tipo_evaluacion
+                ).first()
+                
+                if nota_existente:
+                    # Actualizar nota existente
+                    nota_existente.nota = valor_nota
+                    nota_existente.profesor_id = profesor_id
+                    nota_existente.fecha_modificacion = datetime.utcnow()
+                    nota_existente.estado = 'publicada'
+                else:
+                    # Crear nueva nota
+                    nueva_nota = Nota(
+                        alumno_id=alumno_id,
+                        curso_id=curso_id,
+                        profesor_id=profesor_id,
+                        tipo_evaluacion=tipo_evaluacion,
+                        nota=valor_nota,
+                        estado='publicada'
+                    )
+                    db.session.add(nueva_nota)
+                
+                notas_guardadas += 1
+        
+        # Crear registro de auditoría
+        carga = CargaNota(
+            profesor_id=profesor_id,
+            curso_id=curso_id,
+            tipo_evaluacion='Sistema Interactivo',
+            metodo='tabla',
+            cantidad_notas=notas_guardadas,
+            fecha_carga=datetime.utcnow()
+        )
+        db.session.add(carga)
+        
+        # Guardar todo
+        db.session.commit()
+        
+        mensaje = f'Se guardaron {notas_guardadas} nota(s) exitosamente'
+        if alumnos_creados > 0:
+            mensaje += f' y se crearon {alumnos_creados} alumno(s) nuevo(s)'
+        flash(mensaje, 'success')
+        return redirect(url_for('home'))
+        
+    except json.JSONDecodeError:
+        flash('Error: Formato de datos inválido', 'error')
+        db.session.rollback()
+        return redirect(url_for('home'))
+    except Exception as e:
+        flash(f'Error al guardar notas: {str(e)}', 'error')
+        db.session.rollback()
+        return redirect(url_for('home'))
+
 
 import os
 
