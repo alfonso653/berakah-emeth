@@ -2173,49 +2173,73 @@
                 }
             });
             
-            // Mostrar mensaje de procesamiento
-            alert('⏳ Generando archivos y enviando email... Por favor espera.');
+            // Crear indicador de progreso
+            const progressDiv = document.createElement('div');
+            progressDiv.id = 'progress-email';
+            progressDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 10000; text-align: center; min-width: 300px;';
+            progressDiv.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 15px;">⏳</div>
+                <h3 style="margin: 0 0 10px 0; color: #667eea;">Generando archivos...</h3>
+                <p id="progress-text" style="color: #666; margin: 0;">Preparando Excel...</p>
+                <div style="width: 100%; height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 15px; overflow: hidden;">
+                    <div id="progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); transition: width 0.3s;"></div>
+                </div>
+            `;
+            document.body.appendChild(progressDiv);
             
-            // Generar los 3 archivos antes de enviar
-            Promise.all([
-                generarExcelBase64(encabezados, datosTabla),
-                generarPDFBase64(),
-                generarImagenBase64()
-            ]).then(([excelBase64, pdfBase64, imagenBase64]) => {
-                // Enviar al backend con los archivos adjuntos
-                fetch('/enviar-notas-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email_destinatario: emailDestinatario,
-                        curso: cursoTexto,
-                        encabezados: encabezados,
-                        datos: datosTabla,
-                        archivos: {
-                            excel: excelBase64,
-                            pdf: pdfBase64,
-                            imagen: imagenBase64
-                        }
-                    })
+            const updateProgress = (percent, text) => {
+                document.getElementById('progress-bar').style.width = percent + '%';
+                document.getElementById('progress-text').textContent = text;
+            };
+            
+            // Generar archivos uno por uno con feedback
+            updateProgress(10, 'Generando archivo Excel...');
+            
+            generarExcelBase64(encabezados, datosTabla)
+                .then(excelBase64 => {
+                    updateProgress(40, 'Excel listo. Generando PDF...');
+                    return Promise.all([excelBase64, generarPDFBase64()]);
+                })
+                .then(([excelBase64, pdfBase64]) => {
+                    updateProgress(70, 'PDF listo. Generando imagen...');
+                    return Promise.all([excelBase64, pdfBase64, generarImagenBase64()]);
+                })
+                .then(([excelBase64, pdfBase64, imagenBase64]) => {
+                    updateProgress(90, 'Archivos listos. Enviando email...');
+                    
+                    // Enviar al backend con los archivos adjuntos
+                    return fetch('/enviar-notas-email', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email_destinatario: emailDestinatario,
+                            curso: cursoTexto,
+                            encabezados: encabezados,
+                            datos: datosTabla,
+                            archivos: {
+                                excel: excelBase64,
+                                pdf: pdfBase64,
+                                imagen: imagenBase64
+                            }
+                        })
+                    });
                 })
                 .then(res => res.json())
                 .then(data => {
+                    document.body.removeChild(progressDiv);
                     if (data.success) {
-                        alert('✅ Email enviado exitosamente a ' + emailDestinatario + ' con 3 archivos adjuntos (Excel, PDF, Imagen)');
+                        alert('✅ Email enviado exitosamente a ' + emailDestinatario + '\n\n📎 Adjuntos:\n• Excel (.xlsx)\n• PDF (.pdf)\n• Imagen (.png)');
                     } else {
                         alert('❌ Error al enviar email: ' + data.message);
                     }
                 })
                 .catch(error => {
+                    document.body.removeChild(progressDiv);
                     console.error('Error:', error);
-                    alert('❌ Error al enviar email');
+                    alert('❌ Error al enviar email. Por favor intenta de nuevo.');
                 });
-            }).catch(error => {
-                console.error('Error generando archivos:', error);
-                alert('❌ Error al generar los archivos adjuntos');
-            });
         }
         
         // ========== FUNCIONES AUXILIARES PARA GENERAR ARCHIVOS EN BASE64 ==========
@@ -2258,7 +2282,7 @@
                 const { jsPDF } = window.jspdf;
                 
                 html2canvas(tablaClonada, {
-                    scale: 3,
+                    scale: 2,
                     useCORS: true,
                     logging: false,
                     backgroundColor: '#ffffff',
@@ -2311,7 +2335,7 @@
                 document.body.appendChild(tablaClonada);
                 
                 html2canvas(tablaClonada, {
-                    scale: 3,
+                    scale: 2,
                     useCORS: true,
                     logging: false,
                     backgroundColor: '#ffffff',
@@ -2460,7 +2484,7 @@
             document.body.appendChild(tablaClonada);
             
             html2canvas(tablaClonada, {
-                scale: 3,
+                scale: 2,
                 useCORS: true,
                 logging: false,
                 backgroundColor: '#ffffff',
