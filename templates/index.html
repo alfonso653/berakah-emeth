@@ -2928,8 +2928,9 @@
                         return;
                     }
                     
-                    // Encontrar TODAS las secciones activas
-                    const seccionesActivas = Array.from(document.querySelectorAll(".main > div")).filter(
+                    // Encontrar TODAS las secciones (incluyendo las que están visibles)
+                    const todasLasSecciones = document.querySelectorAll(".main > div");
+                    const seccionesActivas = Array.from(todasLasSecciones).filter(
                         div => div.style.display !== "none"
                     );
                     
@@ -2939,8 +2940,8 @@
                         
                         // Esperar a que termine el fade out
                         setTimeout(() => {
-                            // Ocultar TODAS las secciones
-                            seccionesActivas.forEach(sec => {
+                            // Ocultar TODAS las secciones (no solo las activas, sino TODAS)
+                            todasLasSecciones.forEach(sec => {
                                 sec.style.display = "none";
                                 sec.classList.remove("fade-out");
                             });
@@ -2964,7 +2965,10 @@
                             }
                         }, 500); // Duración del fade out
                     } else {
-                        // Si no hay sección activa, mostrar directamente
+                        // Si no hay sección activa, ocultar todas primero
+                        todasLasSecciones.forEach(sec => sec.style.display = "none");
+                        
+                        // Mostrar directamente la nueva sección
                         const seccion = document.getElementById(seccionId);
                         if (seccion) {
                             if (seccionId === "u-biblica") {
