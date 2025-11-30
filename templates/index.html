@@ -2253,24 +2253,56 @@
                 return;
             }
             
+            // Clonar la tabla para manipularla sin afectar la original
+            const tablaClonada = tabla.cloneNode(true);
+            tablaClonada.style.position = 'absolute';
+            tablaClonada.style.left = '-9999px';
+            tablaClonada.style.width = 'auto';
+            tablaClonada.style.minWidth = 'max-content';
+            
+            // Remover sticky positioning para captura
+            const cellsSticky = tablaClonada.querySelectorAll('[style*="sticky"]');
+            cellsSticky.forEach(cell => {
+                cell.style.position = 'static';
+            });
+            
+            document.body.appendChild(tablaClonada);
+            
             const { jsPDF } = window.jspdf;
             
-            html2canvas(tabla, {
-                scale: 2,
+            html2canvas(tablaClonada, {
+                scale: 3,
                 useCORS: true,
-                logging: false
+                logging: false,
+                backgroundColor: '#ffffff',
+                windowWidth: tablaClonada.scrollWidth,
+                windowHeight: tablaClonada.scrollHeight
             }).then(canvas => {
+                document.body.removeChild(tablaClonada);
+                
                 const imgData = canvas.toDataURL('image/png');
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                
+                // Calcular dimensiones del PDF (A4 landscape o más grande si es necesario)
+                let pdfWidth = imgWidth / 3;  // Ajustar escala
+                let pdfHeight = imgHeight / 3;
+                
+                // Si es muy ancho, usar tamaño personalizado
                 const pdf = new jsPDF({
-                    orientation: 'landscape',
+                    orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
                     unit: 'px',
-                    format: [canvas.width, canvas.height]
+                    format: [pdfWidth + 40, pdfHeight + 40]
                 });
                 
-                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                pdf.addImage(imgData, 'PNG', 20, 20, pdfWidth, pdfHeight);
                 
                 const cursoTexto = document.getElementById('curso-selector').options[document.getElementById('curso-selector').selectedIndex].text;
                 pdf.save(`Notas_${cursoTexto}_${new Date().toISOString().split('T')[0]}.pdf`);
+            }).catch(error => {
+                document.body.removeChild(tablaClonada);
+                console.error('Error al generar PDF:', error);
+                alert('Error al generar PDF. Por favor intenta de nuevo.');
             });
         }
         
@@ -2282,17 +2314,40 @@
                 return;
             }
             
-            html2canvas(tabla, {
-                scale: 2,
+            // Clonar la tabla para manipularla sin afectar la original
+            const tablaClonada = tabla.cloneNode(true);
+            tablaClonada.style.position = 'absolute';
+            tablaClonada.style.left = '-9999px';
+            tablaClonada.style.width = 'auto';
+            tablaClonada.style.minWidth = 'max-content';
+            
+            // Remover sticky positioning para captura
+            const cellsSticky = tablaClonada.querySelectorAll('[style*="sticky"]');
+            cellsSticky.forEach(cell => {
+                cell.style.position = 'static';
+            });
+            
+            document.body.appendChild(tablaClonada);
+            
+            html2canvas(tablaClonada, {
+                scale: 3,
                 useCORS: true,
                 logging: false,
-                backgroundColor: '#ffffff'
+                backgroundColor: '#ffffff',
+                windowWidth: tablaClonada.scrollWidth,
+                windowHeight: tablaClonada.scrollHeight
             }).then(canvas => {
+                document.body.removeChild(tablaClonada);
+                
                 const link = document.createElement('a');
                 const cursoTexto = document.getElementById('curso-selector').options[document.getElementById('curso-selector').selectedIndex].text;
                 link.download = `Notas_${cursoTexto}_${new Date().toISOString().split('T')[0]}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+            }).catch(error => {
+                document.body.removeChild(tablaClonada);
+                console.error('Error al generar imagen:', error);
+                alert('Error al generar imagen. Por favor intenta de nuevo.');
             });
         }
         
