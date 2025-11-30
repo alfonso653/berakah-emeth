@@ -2848,9 +2848,12 @@ def enviar_notas_email():
             tabla_html += '</tr>'
         tabla_html += '</tbody></table>'
         
-        # Crear mensaje
+        # Crear mensaje con información del profesor
+        profesor_nombre = f"{usuario.nombre} {usuario.apellidos or ''}".strip()
+        profesor_email = usuario.email
+        
         msg = Message(
-            subject=f'Notas del curso: {curso}',
+            subject=f'Notas del curso: {curso} - Enviado por Prof. {profesor_nombre}',
             sender=app.config['MAIL_USERNAME'],
             recipients=[email_destinatario]
         )
@@ -2864,6 +2867,7 @@ def enviar_notas_email():
                 .content {{ padding: 20px; background: #f9f9f9; }}
                 .footer {{ text-align: center; padding: 15px; color: #999; font-size: 12px; }}
                 .attachments {{ background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 20px; }}
+                .profesor-info {{ background: #fff3e0; padding: 12px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #ff9800; }}
             </style>
         </head>
         <body>
@@ -2873,7 +2877,12 @@ def enviar_notas_email():
             </div>
             <div class="content">
                 <p>Estimado/a,</p>
-                <p>El profesor <strong>{usuario.nombre} {usuario.apellidos or ''}</strong> ha compartido la tabla de notas del curso <strong>{curso}</strong>.</p>
+                <div class="profesor-info">
+                    <p style="margin: 0; font-weight: bold; color: #e65100;">👨‍🏫 Enviado por:</p>
+                    <p style="margin: 5px 0 0 0;"><strong>{profesor_nombre}</strong></p>
+                    <p style="margin: 2px 0 0 0; font-size: 14px; color: #666;">📧 {profesor_email}</p>
+                </div>
+                <p>Se comparte la tabla de notas del curso <strong>{curso}</strong>.</p>
                 <p>A continuación se presenta el detalle:</p>
                 <br>
                 {tabla_html}

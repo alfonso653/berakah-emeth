@@ -2928,19 +2928,22 @@
                         return;
                     }
                     
-                    // Encontrar la sección activa actual
-                    const seccionActiva = Array.from(document.querySelectorAll(".main > div")).find(
+                    // Encontrar TODAS las secciones activas
+                    const seccionesActivas = Array.from(document.querySelectorAll(".main > div")).filter(
                         div => div.style.display !== "none"
                     );
                     
-                    // Fade out de la sección actual
-                    if (seccionActiva) {
-                        seccionActiva.classList.add("fade-out");
+                    // Fade out de todas las secciones activas
+                    if (seccionesActivas.length > 0) {
+                        seccionesActivas.forEach(sec => sec.classList.add("fade-out"));
                         
                         // Esperar a que termine el fade out
                         setTimeout(() => {
-                            seccionActiva.style.display = "none";
-                            seccionActiva.classList.remove("fade-out");
+                            // Ocultar TODAS las secciones
+                            seccionesActivas.forEach(sec => {
+                                sec.style.display = "none";
+                                sec.classList.remove("fade-out");
+                            });
                             
                             // Mostrar y hacer fade in de la nueva sección
                             const seccion = document.getElementById(seccionId);
