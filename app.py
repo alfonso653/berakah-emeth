@@ -2811,13 +2811,17 @@ def cargar_alumnos(curso_slug):
 @app.route('/enviar-notas-email', methods=['POST'])
 @login_required
 def enviar_notas_email():
-    """Envía la tabla de notas por email"""
+    """Envía la tabla de notas por email con archivos adjuntos"""
+    import base64
+    from datetime import datetime
+    
     try:
         data = request.get_json()
         email_destinatario = data.get('email_destinatario')
         curso = data.get('curso')
         encabezados = data.get('encabezados', [])
         datos = data.get('datos', [])
+        archivos = data.get('archivos', {})
         
         if not email_destinatario or not curso:
             return jsonify({'success': False, 'message': 'Datos incompletos'}), 400
@@ -2859,6 +2863,7 @@ def enviar_notas_email():
                 .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }}
                 .content {{ padding: 20px; background: #f9f9f9; }}
                 .footer {{ text-align: center; padding: 15px; color: #999; font-size: 12px; }}
+                .attachments {{ background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 20px; }}
             </style>
         </head>
         <body>
@@ -2873,6 +2878,15 @@ def enviar_notas_email():
                 <br>
                 {tabla_html}
                 <br>
+                <div class="attachments">
+                    <p style="margin: 0; font-weight: bold; color: #1976d2;">📎 Archivos Adjuntos:</p>
+                    <ul style="margin: 10px 0;">
+                        <li>📊 Notas_{curso.replace(' ', '_')}.xlsx (Excel)</li>
+                        <li>📄 Notas_{curso.replace(' ', '_')}.pdf (PDF)</li>
+                        <li>🖼️ Notas_{curso.replace(' ', '_')}.png (Imagen)</li>
+                    </ul>
+                </div>
+                <br>
                 <p style="color: #666; font-size: 14px;">Fecha de envío: {datetime.now().strftime('%d/%m/%Y %H:%M')}</p>
             </div>
             <div class="footer">
@@ -2883,12 +2897,39 @@ def enviar_notas_email():
         </html>
         """
         
+        # Adjuntar archivos si existen
+        fecha_actual = datetime.now().strftime('%Y-%m-%d')
+        curso_filename = curso.replace(' ', '_').replace('(', '').replace(')', '')
+        
+        if archivos.get('excel'):
+            msg.attach(
+                f"Notas_{curso_filename}_{fecha_actual}.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                base64.b64decode(archivos['excel'])
+            )
+        
+        if archivos.get('pdf'):
+            msg.attach(
+                f"Notas_{curso_filename}_{fecha_actual}.pdf",
+                "application/pdf",
+                base64.b64decode(archivos['pdf'])
+            )
+        
+        if archivos.get('imagen'):
+            msg.attach(
+                f"Notas_{curso_filename}_{fecha_actual}.png",
+                "image/png",
+                base64.b64decode(archivos['imagen'])
+            )
+        
         mail.send(msg)
         
-        return jsonify({'success': True, 'message': 'Email enviado exitosamente'})
+        return jsonify({'success': True, 'message': 'Email enviado exitosamente con archivos adjuntos'})
         
     except Exception as e:
         print(f"Error enviando email: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'success': False, 'message': str(e)}), 500
 
 

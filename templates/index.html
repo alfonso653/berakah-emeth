@@ -2173,30 +2173,160 @@
                 }
             });
             
-            // Enviar al backend
-            fetch('/enviar-notas-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email_destinatario: emailDestinatario,
-                    curso: cursoTexto,
-                    encabezados: encabezados,
-                    datos: datosTabla
+            // Mostrar mensaje de procesamiento
+            alert('⏳ Generando archivos y enviando email... Por favor espera.');
+            
+            // Generar los 3 archivos antes de enviar
+            Promise.all([
+                generarExcelBase64(encabezados, datosTabla),
+                generarPDFBase64(),
+                generarImagenBase64()
+            ]).then(([excelBase64, pdfBase64, imagenBase64]) => {
+                // Enviar al backend con los archivos adjuntos
+                fetch('/enviar-notas-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email_destinatario: emailDestinatario,
+                        curso: cursoTexto,
+                        encabezados: encabezados,
+                        datos: datosTabla,
+                        archivos: {
+                            excel: excelBase64,
+                            pdf: pdfBase64,
+                            imagen: imagenBase64
+                        }
+                    })
                 })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('✅ Email enviado exitosamente a ' + emailDestinatario);
-                } else {
-                    alert('❌ Error al enviar email: ' + data.message);
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Email enviado exitosamente a ' + emailDestinatario + ' con 3 archivos adjuntos (Excel, PDF, Imagen)');
+                    } else {
+                        alert('❌ Error al enviar email: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Error al enviar email');
+                });
+            }).catch(error => {
+                console.error('Error generando archivos:', error);
+                alert('❌ Error al generar los archivos adjuntos');
+            });
+        }
+        
+        // ========== FUNCIONES AUXILIARES PARA GENERAR ARCHIVOS EN BASE64 ==========
+        
+        function generarExcelBase64(encabezados, datosTabla) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const datos = [encabezados, ...datosTabla];
+                    const ws = XLSX.utils.aoa_to_sheet(datos);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Notas");
+                    
+                    // Generar como base64
+                    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+                    resolve(wbout);
+                } catch (error) {
+                    reject(error);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Error al enviar email');
+            });
+        }
+        
+        function generarPDFBase64() {
+            return new Promise((resolve, reject) => {
+                const tabla = document.getElementById('tabla-notas');
+                
+                // Clonar la tabla
+                const tablaClonada = tabla.cloneNode(true);
+                tablaClonada.style.position = 'absolute';
+                tablaClonada.style.left = '-9999px';
+                tablaClonada.style.width = 'auto';
+                tablaClonada.style.minWidth = 'max-content';
+                
+                const cellsSticky = tablaClonada.querySelectorAll('[style*="sticky"]');
+                cellsSticky.forEach(cell => {
+                    cell.style.position = 'static';
+                });
+                
+                document.body.appendChild(tablaClonada);
+                
+                const { jsPDF } = window.jspdf;
+                
+                html2canvas(tablaClonada, {
+                    scale: 3,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    windowWidth: tablaClonada.scrollWidth,
+                    windowHeight: tablaClonada.scrollHeight
+                }).then(canvas => {
+                    document.body.removeChild(tablaClonada);
+                    
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = canvas.width;
+                    const imgHeight = canvas.height;
+                    
+                    let pdfWidth = imgWidth / 3;
+                    let pdfHeight = imgHeight / 3;
+                    
+                    const pdf = new jsPDF({
+                        orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
+                        unit: 'px',
+                        format: [pdfWidth + 40, pdfHeight + 40]
+                    });
+                    
+                    pdf.addImage(imgData, 'PNG', 20, 20, pdfWidth, pdfHeight);
+                    
+                    // Obtener base64 del PDF
+                    const pdfBase64 = pdf.output('datauristring').split(',')[1];
+                    resolve(pdfBase64);
+                }).catch(error => {
+                    document.body.removeChild(tablaClonada);
+                    reject(error);
+                });
+            });
+        }
+        
+        function generarImagenBase64() {
+            return new Promise((resolve, reject) => {
+                const tabla = document.getElementById('tabla-notas');
+                
+                // Clonar la tabla
+                const tablaClonada = tabla.cloneNode(true);
+                tablaClonada.style.position = 'absolute';
+                tablaClonada.style.left = '-9999px';
+                tablaClonada.style.width = 'auto';
+                tablaClonada.style.minWidth = 'max-content';
+                
+                const cellsSticky = tablaClonada.querySelectorAll('[style*="sticky"]');
+                cellsSticky.forEach(cell => {
+                    cell.style.position = 'static';
+                });
+                
+                document.body.appendChild(tablaClonada);
+                
+                html2canvas(tablaClonada, {
+                    scale: 3,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    windowWidth: tablaClonada.scrollWidth,
+                    windowHeight: tablaClonada.scrollHeight
+                }).then(canvas => {
+                    document.body.removeChild(tablaClonada);
+                    
+                    // Obtener base64 de la imagen
+                    const imagenBase64 = canvas.toDataURL('image/png').split(',')[1];
+                    resolve(imagenBase64);
+                }).catch(error => {
+                    document.body.removeChild(tablaClonada);
+                    reject(error);
+                });
             });
         }
         
