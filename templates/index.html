@@ -3358,10 +3358,19 @@
                     btnTexto.textContent = '✅ Completada';
                     btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
                     
-                    // Mostrar Toast de éxito
-                    showToast('Progreso: ' + data.clases_completadas + '/' + data.total_clases + ' clases (' + data.porcentaje + '%)', 'success');
+                    // Mostrar Modal elegante de éxito
+                    showModal({
+                        icon: '🎉',
+                        title: '¡Clase Completada!',
+                        message: `Has completado esta clase exitosamente.<br><br><strong>Progreso del curso:</strong><br>${data.clases_completadas} de ${data.total_clases} clases (${data.porcentaje}%)`,
+                        confirmText: 'Continuar',
+                        onConfirm: () => {
+                            // Actualizar el sidebar después de cerrar el modal
+                            actualizarSidebarProgreso(cursoSlug);
+                        }
+                    });
                     
-                    // Actualizar el sidebar
+                    // Actualizar el sidebar inmediatamente
                     actualizarSidebarProgreso(cursoSlug);
                 } else {
                     showToast(data.message, 'error');
