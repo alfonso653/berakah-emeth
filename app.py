@@ -2340,20 +2340,41 @@ def registro():
         nombre = request.form['nombre']
         email = request.form['email']
         contraseña = request.form['contraseña']
+        genero = request.form.get('genero')
+        tipo_usuario = request.form.get('tipo_usuario', 'estudiante')
+        codigo_profesor = request.form.get('codigo_profesor', '')
 
+        # Validar email único
         existente = Usuario.query.filter_by(email=email).first()
         if existente:
             flash('⚠️ El correo ya está registrado.')
             return redirect(url_for('registro'))
 
-        nuevo_usuario = Usuario(nombre=nombre, email=email)
+        # Validar código de profesor si es necesario
+        CODIGO_PROFESOR_VALIDO = "BERAKAH2025"  # Cambiar este código por uno seguro
+        es_profesor = False
+        
+        if tipo_usuario == 'profesor':
+            if codigo_profesor != CODIGO_PROFESOR_VALIDO:
+                flash('❌ Código de profesor incorrecto. Contacta al administrador.')
+                return redirect(url_for('registro'))
+            es_profesor = True
+
+        # Crear nuevo usuario
+        nuevo_usuario = Usuario(
+            nombre=nombre, 
+            email=email,
+            genero=genero,
+            es_profesor=es_profesor
+        )
         nuevo_usuario.set_password(contraseña)
 
         db.session.add(nuevo_usuario)
         db.session.commit()
 
-        flash('✅ Registro exitoso. ¡Ya puedes iniciar sesión!')
-        return redirect(url_for('home'))
+        tipo_cuenta = "profesor" if es_profesor else "estudiante"
+        flash(f'✅ Cuenta de {tipo_cuenta} creada exitosamente. ¡Ya puedes iniciar sesión!')
+        return redirect(url_for('login_form'))
 
     return render_template('registro.html')
 @app.route('/login', methods=['GET'])
@@ -2940,6 +2961,104 @@ def enviar_notas_email():
         import traceback
         traceback.print_exc()
         return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/publicar-tablero', methods=['POST'])
+@login_required
+def publicar_tablero():
+    """Publica una tabla de notas en el tablero público"""
+    from models import TablaNotasPublicada, Curso, Usuario
+    
+    try:
+        # Obtener usuario actual
+        usuario = Usuario.query.get(session['usuario_id'])
+        if not usuario:
+            return jsonify({'success': False, 'error': 'Usuario no encontrado'}), 404
+        
+        # Verificar que sea profesor
+        if not usuario.es_profesor:
+            return jsonify({'success': False, 'error': 'Solo los profesores pueden publicar notas'}), 403
+        
+        data = request.get_json()
+        curso_slug = data.get('curso_id')  # En realidad es el slug
+        curso_nombre = data.get('curso_nombre')
+        imagen_base64 = data.get('imagen_base64')
+        
+        # Validaciones
+        if not all([curso_slug, curso_nombre, imagen_base64]):
+            return jsonify({'success': False, 'error': 'Faltan datos requeridos'}), 400
+        
+        # Buscar el curso por slug
+        curso = Curso.query.filter_by(slug=curso_slug).first()
+        if not curso:
+            # Si no existe, crearlo
+            curso = Curso(
+                nombre=curso_nombre,
+                slug=curso_slug,
+                profesor_id=usuario.id,
+                activo=True
+            )
+            db.session.add(curso)
+            db.session.flush()  # Para obtener el ID
+        
+        # Crear publicación
+        publicacion = TablaNotasPublicada(
+            profesor_id=usuario.id,
+            curso_id=curso.id,
+            curso_nombre=curso_nombre,
+            imagen_base64=imagen_base64,
+            activa=True
+        )
+        
+        db.session.add(publicacion)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Notas publicadas exitosamente',
+            'publicacion_id': publicacion.id
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error publicando en tablero: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/tablero-notas', methods=['GET'])
+def obtener_tablero_notas():
+    """Obtiene las publicaciones del tablero de notas - Público para todos"""
+    from models import TablaNotasPublicada, Usuario
+    
+    try:
+        # Mostrar todas las publicaciones activas para todos (sin restricción)
+        publicaciones = TablaNotasPublicada.query.filter_by(activa=True).order_by(
+            TablaNotasPublicada.fecha_publicacion.desc()
+        ).all()
+        
+        # Serializar publicaciones
+        resultado = []
+        for pub in publicaciones:
+            resultado.append({
+                'id': pub.id,
+                'curso_nombre': pub.curso_nombre,
+                'imagen_base64': pub.imagen_base64,
+                'fecha_publicacion': pub.fecha_publicacion.isoformat(),
+                'profesor_nombre': f"{pub.profesor.nombre} {pub.profesor.apellidos or ''}".strip()
+            })
+        
+        return jsonify({
+            'success': True,
+            'publicaciones': resultado
+        })
+        
+    except Exception as e:
+        print(f"Error obteniendo tablero: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @app.route('/guardar-notas-tabla', methods=['POST'])

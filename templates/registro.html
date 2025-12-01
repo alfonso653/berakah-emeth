@@ -4,65 +4,206 @@
     <meta charset="UTF-8">
     <title>Registro - Berakah Emeth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 20px;
         }
 
         .form-container {
             background-color: white;
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
+            animation: slideIn 0.5s ease;
         }
 
-        h2 {
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
             text-align: center;
-            margin-bottom: 25px;
-            color: #333;
+            margin-bottom: 30px;
         }
 
-        input[type="text"], input[type="email"], input[type="password"] {
+        .logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"], 
+        input[type="email"], 
+        input[type="password"],
+        select {
             width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .codigo-profesor {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
             padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
             border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #856404;
         }
 
         button {
             width: 100%;
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 12px;
+            padding: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
         }
 
         button:hover {
-            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         .mensaje {
-            color: #cc0000;
-            margin-bottom: 10px;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             text-align: center;
+            border-left: 4px solid #dc3545;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h2>Registro de Usuario</h2>
+    <div class="logo">
+        <h1>📚 Berakah Emeth</h1>
+        <p>Crear cuenta nueva</p>
+    </div>
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -75,12 +216,79 @@
     {% endwith %}
 
     <form method="POST">
-        <input type="text" name="nombre" placeholder="Nombre completo" required>
-        <input type="email" name="email" placeholder="Correo electrónico" required>
-        <input type="password" name="contraseña" placeholder="Contraseña" required>
-        <button type="submit">Registrarme</button>
+        <div class="form-group">
+            <label>Tipo de cuenta</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="estudiante" name="tipo_usuario" value="estudiante" checked onchange="toggleCodigoProfesor()">
+                    <label for="estudiante">🎓 Estudiante</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="profesor" name="tipo_usuario" value="profesor" onchange="toggleCodigoProfesor()">
+                    <label for="profesor">👨‍🏫 Profesor</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
+        </div>
+
+        <div class="form-group">
+            <label for="genero">Género</label>
+            <select id="genero" name="genero" required>
+                <option value="">Seleccionar...</option>
+                <option value="hombre">Hombre</option>
+                <option value="mujer">Mujer</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="contraseña">Contraseña</label>
+            <input type="password" id="contraseña" name="contraseña" placeholder="Mínimo 6 caracteres" required minlength="6">
+        </div>
+
+        <div id="codigo-profesor-container" class="form-group codigo-profesor">
+            <div class="info-box">
+                ⚠️ <strong>Solo para profesores:</strong> Solicita el código de acceso al administrador.
+            </div>
+            <label for="codigo_profesor">Código de profesor</label>
+            <input type="text" id="codigo_profesor" name="codigo_profesor" placeholder="Ingresa el código proporcionado">
+        </div>
+
+        <button type="submit">✅ Crear cuenta</button>
     </form>
+
+    <div class="login-link">
+        ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
+    </div>
 </div>
+
+<script>
+    function toggleCodigoProfesor() {
+        const isProfesor = document.getElementById('profesor').checked;
+        const codigoContainer = document.getElementById('codigo-profesor-container');
+        const codigoInput = document.getElementById('codigo_profesor');
+        
+        if (isProfesor) {
+            codigoContainer.style.display = 'block';
+            codigoInput.required = true;
+        } else {
+            codigoContainer.style.display = 'none';
+            codigoInput.required = false;
+            codigoInput.value = '';
+        }
+    }
+
+    // Llamar al cargar para asegurar estado inicial correcto
+    toggleCodigoProfesor();
+</script>
 
 </body>
 </html>

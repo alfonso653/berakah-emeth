@@ -96,3 +96,16 @@ class CargaNota(db.Model):
     curso_rel = db.relationship('Curso', backref='cargas')
 
 
+class TablaNotasPublicada(db.Model):
+    """Tabla de notas publicada en el tablero público"""
+    id = db.Column(db.Integer, primary_key=True)
+    profesor_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    curso_id = db.Column(db.Integer, db.ForeignKey('curso.id'), nullable=False)
+    curso_nombre = db.Column(db.String(200), nullable=False)  # Guardamos el nombre para búsquedas rápidas
+    imagen_base64 = db.Column(db.Text, nullable=False)  # Imagen de la tabla en base64
+    fecha_publicacion = db.Column(db.DateTime, default=datetime.utcnow)
+    activa = db.Column(db.Boolean, default=True)  # Para poder ocultar/eliminar sin borrar
+    
+    # Relaciones
+    profesor = db.relationship('Usuario', backref='tablas_publicadas')
+    curso = db.relationship('Curso', backref='tablas_publicadas')

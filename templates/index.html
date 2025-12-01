@@ -201,6 +201,51 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        /* Indicador de scroll - Sombras en los bordes */
+        .nav-links::before,
+        .nav-links::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.95), transparent);
+        }
+
+        .nav-links::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(255, 255, 255, 0.95), transparent);
+        }
+
+        .nav-links.show-left-shadow::before {
+            opacity: 1;
+        }
+
+        .nav-links.show-right-shadow::after {
+            opacity: 1;
+        }
+
+        /* Animación de rebote inicial - indica que es scrolleable */
+        @keyframes bounceScroll {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-15px); }
+            50% { transform: translateX(0); }
+            75% { transform: translateX(-15px); }
+        }
+
+        .nav-links.initial-bounce {
+            animation: bounceScroll 1.5s ease-in-out 0.5s 1;
         }
 
         .nav-links.scrolled {
@@ -436,6 +481,23 @@
 
             .nav-links::-webkit-scrollbar {
                 display: none; /* Chrome/Safari */
+            }
+
+            /* Indicadores de scroll más visibles en móvil */
+            .nav-links::before,
+            .nav-links::after {
+                width: 40px;
+                animation: pulseScroll 2s ease-in-out infinite;
+            }
+
+            @keyframes pulseScroll {
+                0%, 100% { opacity: 0.6; }
+                50% { opacity: 1; }
+            }
+
+            .nav-links.show-right-shadow::after {
+                opacity: 1;
+                animation: pulseScroll 2s ease-in-out infinite;
             }
 
             .nav-links a {
@@ -1158,6 +1220,218 @@
         .flash-message {
             animation: slideInRight 0.5s ease-out;
         }
+
+        /* ========== TOAST NOTIFICATIONS ========== */
+        .toast-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 400px;
+            animation: slideInToast 0.3s ease-out;
+            pointer-events: auto;
+            border-left: 4px solid;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%);
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+        }
+
+        .toast.warning {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+        }
+
+        .toast.info {
+            border-left-color: #3b82f6;
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+        }
+
+        .toast-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: #4b5563;
+        }
+
+        @keyframes slideInToast {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.toast-out {
+            animation: slideOutToast 0.3s ease-in forwards;
+        }
+
+        @keyframes slideOutToast {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* ========== MODAL PERSONALIZADO ========== */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .custom-modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        .custom-modal-header {
+            padding: 30px 30px 20px;
+            text-align: center;
+        }
+
+        .custom-modal-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .custom-modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .custom-modal-message {
+            font-size: 15px;
+            color: #6b7280;
+            line-height: 1.6;
+            padding: 0 10px;
+        }
+
+        .custom-modal-footer {
+            padding: 20px 30px 30px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .custom-modal-btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .custom-modal-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .custom-modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .custom-modal-btn-secondary {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .custom-modal-btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
     
     <!-- Librerías para exportar archivos -->
@@ -1167,6 +1441,9 @@
 </head>
 
 <body>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <!-- Topbar Premium -->
     <div class="topbar">
@@ -1225,7 +1502,9 @@
         <a href="#" data-seccion="testimonios">Testimonios</a>
         <a href="#" data-seccion="venciendo-pornografia">Venciendo la Pornografía</a>
         <a href="#" data-seccion="madre">40 Formas de ser Madre</a>
-        <a href="#" data-seccion="subir-notas" onclick="validarProfesor(event)">📝 Sube tus notas</a>
+        <a href="#" data-seccion="subir-notas" onclick="validarProfesor(event)">Sube tus notas</a>
+        <a href="#" data-seccion="tablero-notas">Tablero de notas</a>
+        <a href="#" data-seccion="insignias" onclick="validarLogin(event)">Insignias</a>
     </div>
 
     <!-- Mensajes Flash -->
@@ -1693,8 +1972,11 @@
                                             <button onclick="eliminarColumna(0)" style="float: right; background: rgba(231, 76, 60, 0.2); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; margin-left: 10px;" title="Eliminar columna Alumno">×</button>
                                         </th>
                                         <th style="padding: 15px; text-align: left; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2); min-width: 200px;">
-                                            Email
-                                            <button onclick="eliminarColumna(1)" style="float: right; background: rgba(231, 76, 60, 0.2); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; margin-left: 10px;" title="Eliminar columna Email">×</button>
+                                            Celular
+                                            <button onclick="eliminarColumna(1)" style="float: right; background: rgba(231, 76, 60, 0.2); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; margin-left: 10px;" title="Eliminar columna Celular">×</button>
+                                        </th>
+                                        <th style="padding: 15px; text-align: center; font-weight: 600; background: rgba(255,255,255,0.1); min-width: 120px; position: sticky; right: 0; z-index: 10;">
+                                            TOTAL
                                         </th>
                                     </tr>
                                 </thead>
@@ -1744,6 +2026,21 @@
                         </div>
                     </div>
 
+                    <!-- PASO 5: Publicar en Tablero de Notas -->
+                    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 30px;">
+                        <h2 style="font-size: 22px; color: #667eea; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            📌 Paso 5: Publicar en Tablero de Notas
+                        </h2>
+                        <p style="color: #666; margin-bottom: 20px;">Comparte esta tabla de notas en el tablero público para que los estudiantes puedan verla</p>
+                        
+                        <div style="display: flex; justify-content: center;">
+                            <button type="button" onclick="publicarEnTablero()" style="padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 16px; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); transition: all 0.3s; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 22px;">📋</span>
+                                Publicar en Tablero de Notas
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Botón volver -->
                     <div style="margin-top: 30px; text-align: center;">
                         <button type="button" onclick="document.querySelector('[data-seccion=inicio]').click()" style="padding: 15px 40px; border: 2px solid #667eea; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; background: white; color: #667eea; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;">
@@ -1759,6 +2056,40 @@
                     <textarea name="datos_notas" id="input-datos-notas"></textarea>
                 </form>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLERO DE NOTAS -->
+    <div id="tablero-notas" style="display: none; width: 100%; padding: 40px 20px; box-sizing: border-box; min-height: 100vh; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <!-- Encabezado -->
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h1 style="font-size: 42px; color: #667eea; margin-bottom: 10px; font-weight: 700;">
+                    📋 Tablero de Notas
+                </h1>
+                <p style="font-size: 18px; color: #666;">
+                    Consulta las calificaciones publicadas por tus profesores
+                </p>
+            </div>
+
+            <!-- Contenedor de tarjetas -->
+            <div id="contenedor-tarjetas-notas" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-bottom: 40px;">
+                <!-- Las tarjetas se cargarán dinámicamente aquí -->
+            </div>
+
+            <!-- Mensaje cuando no hay publicaciones -->
+            <div id="mensaje-sin-notas" style="display: none; text-align: center; padding: 60px 20px;">
+                <div style="font-size: 80px; margin-bottom: 20px;">📭</div>
+                <h3 style="color: #999; font-size: 24px; margin: 0;">No hay notas publicadas aún</h3>
+                <p style="color: #bbb; margin-top: 10px;">Las notas aparecerán aquí cuando los profesores las publiquen</p>
+            </div>
+
+            <!-- Botón volver -->
+            <div style="text-align: center; margin-top: 40px;">
+                <button type="button" onclick="document.querySelector('[data-seccion=inicio]').click()" style="padding: 15px 40px; border: 2px solid #667eea; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; background: white; color: #667eea; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;">
+                    ↩️ Volver al Inicio
+                </button>
             </div>
         </div>
     </div>
@@ -1822,7 +2153,15 @@
         function validarLogin(event) {
             {% if not usuario %}
                 event.preventDefault();
-                cargarLoginEnContenedor();
+                showModal({
+                    icon: '🎓',
+                    title: 'Acceso a Universidad Bíblica',
+                    message: 'Para acceder a los cursos y clases, necesitas iniciar sesión o crear una cuenta gratuita.',
+                    confirmText: 'Iniciar sesión',
+                    cancelText: 'Registrarme',
+                    onConfirm: () => cargarLoginEnContenedor(),
+                    onCancel: () => window.location.href = '/registro'
+                });
                 return false;
             {% endif %}
         }
@@ -1830,13 +2169,26 @@
         function validarProfesor(event) {
             {% if not usuario %}
                 event.preventDefault();
-                cargarLoginEnContenedor();
+                showModal({
+                    icon: '🔒',
+                    title: 'Inicio de sesión requerido',
+                    message: 'Debes iniciar sesión para acceder a esta sección.',
+                    confirmText: 'Iniciar sesión',
+                    onConfirm: () => cargarLoginEnContenedor()
+                });
                 return false;
-            {% else %}
-                // Aquí validaremos si el usuario es profesor
-                // Por ahora permitimos acceso a todos los usuarios logueados
-                // TODO: Agregar rol de profesor en la base de datos
+            {% elif not usuario.es_profesor %}
+                event.preventDefault();
+                showModal({
+                    icon: '👨‍🏫',
+                    title: 'Sección exclusiva para profesores',
+                    message: 'Esta área está reservada únicamente para profesores. Si eres profesor y no tienes acceso, contacta al administrador.',
+                    confirmText: 'Entendido'
+                });
+                return false;
             {% endif %}
+            // Usuario es profesor, permitir acceso
+            return true;
         }
 
         // ========== SISTEMA DE NOTAS INTERACTIVO ==========
@@ -1870,7 +2222,7 @@
         function generarTabla() {
             const cursoId = document.getElementById('curso-selector').value;
             if (!cursoId) {
-                alert('⚠️ Primero selecciona un curso');
+                showToast('Primero selecciona un curso', 'warning');
                 return;
             }
             
@@ -1886,8 +2238,8 @@
             const thead = document.getElementById('thead-notas').querySelector('tr');
             const tbody = document.getElementById('tbody-notas');
             
-            // Limpiar encabezados (mantener #, Alumno, Email)
-            while (thead.children.length > 3) {
+            // Limpiar encabezados (mantener #, Alumno, Celular, Total)
+            while (thead.children.length > 4) {
                 thead.removeChild(thead.lastChild);
             }
             
@@ -1941,19 +2293,26 @@
             tdNombre.innerHTML = `<input type="text" placeholder="Nombre del alumno" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif;">`;
             tr.appendChild(tdNombre);
             
-            // Columna de Email (editable)
-            const tdEmail = document.createElement('td');
-            tdEmail.style.cssText = 'padding: 8px; border-right: 1px solid #e0e0e0;';
-            tdEmail.innerHTML = `<input type="email" placeholder="email@ejemplo.com" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif;">`;
-            tr.appendChild(tdEmail);
+            // Columna de Celular (editable)
+            const tdCelular = document.createElement('td');
+            tdCelular.style.cssText = 'padding: 8px; border-right: 1px solid #e0e0e0;';
+            tdCelular.innerHTML = `<input type="tel" placeholder="Ej: 3001234567" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif;">`;
+            tr.appendChild(tdCelular);
             
-            // Columnas de notas (agregar tantas como existan)
-            for (let i = 3; i < numColumnas; i++) {
+            // Columnas de notas (agregar tantas como existan, menos la columna Total)
+            for (let i = 3; i < numColumnas - 1; i++) {
                 const tdNota = document.createElement('td');
                 tdNota.style.cssText = 'padding: 8px; border-right: 1px solid #e0e0e0;';
-                tdNota.innerHTML = `<input type="number" class="nota-input" data-columna="${i - 2}" min="0" max="100" step="0.1" placeholder="0-100" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; text-align: center; font-family: 'Poppins', sans-serif;">`;
+                tdNota.innerHTML = `<input type="number" class="nota-input" data-columna="${i - 2}" min="0" max="100" step="0.1" placeholder="0-100" onchange="calcularTotal(this)" oninput="calcularTotal(this)" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; text-align: center; font-family: 'Poppins', sans-serif;">`;
                 tr.appendChild(tdNota);
             }
+            
+            // Columna Total (calculada automáticamente)
+            const tdTotal = document.createElement('td');
+            tdTotal.style.cssText = 'padding: 8px; text-align: center; font-weight: 700; font-size: 16px; color: #667eea; background: rgba(102, 126, 234, 0.05); position: sticky; right: 0; z-index: 9;';
+            tdTotal.className = 'total-cell';
+            tdTotal.textContent = '0';
+            tr.appendChild(tdTotal);
             
             tbody.appendChild(tr);
         }
@@ -1965,8 +2324,9 @@
             contadorColumnas++;
             const nombreColumna = `Nota ${contadorColumnas}`;
             
-            // Agregar encabezado
+            // Agregar encabezado ANTES de la columna TOTAL
             const thead = document.getElementById('thead-notas').querySelector('tr');
+            const totalHeader = thead.lastElementChild; // La columna TOTAL siempre es la última
             const th = document.createElement('th');
             th.style.cssText = 'padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2); min-width: 120px;';
             th.dataset.columnaId = contadorColumnas;
@@ -1976,15 +2336,36 @@
                     <button onclick="eliminarColumna(${contadorColumnas})" style="background: rgba(231, 76, 60, 0.2); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center;" title="Eliminar columna">×</button>
                 </div>
             `;
-            thead.appendChild(th);
+            thead.insertBefore(th, totalHeader);
             
-            // Agregar celda de input a cada fila existente
+            // Agregar celda de input a cada fila existente (antes de la columna Total)
             rows.forEach(row => {
+                const totalCell = row.querySelector('.total-cell');
                 const td = document.createElement('td');
                 td.style.cssText = 'padding: 8px; border-right: 1px solid #e0e0e0;';
-                td.innerHTML = `<input type="number" class="nota-input" data-columna="${contadorColumnas}" min="0" max="100" step="0.1" placeholder="0-100" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; text-align: center; font-family: 'Poppins', sans-serif;">`;
-                row.appendChild(td);
+                td.innerHTML = `<input type="number" class="nota-input" data-columna="${contadorColumnas}" min="0" max="100" step="0.1" placeholder="0-100" onchange="calcularTotal(this)" oninput="calcularTotal(this)" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; text-align: center; font-family: 'Poppins', sans-serif;">`;
+                row.insertBefore(td, totalCell);
             });
+        }
+        
+        function calcularTotal(input) {
+            const row = input.closest('tr');
+            const notasInputs = row.querySelectorAll('.nota-input');
+            let total = 0;
+            let count = 0;
+            
+            notasInputs.forEach(input => {
+                const valor = parseFloat(input.value);
+                if (!isNaN(valor) && valor > 0) {
+                    total += valor;
+                    count++;
+                }
+            });
+            
+            const totalCell = row.querySelector('.total-cell');
+            if (totalCell) {
+                totalCell.textContent = count > 0 ? total.toFixed(1) : '0';
+            }
         }
         
         function eliminarFila(filaId) {
@@ -2041,7 +2422,7 @@
         function guardarTodasNotas() {
             const cursoId = document.getElementById('curso-selector').value;
             if (!cursoId) {
-                alert('⚠️ Selecciona un curso primero');
+                showToast('Selecciona un curso primero', 'warning');
                 return;
             }
             
@@ -2049,7 +2430,7 @@
             const rows = tbody.querySelectorAll('tr');
             
             if (rows.length === 0) {
-                alert('⚠️ No hay alumnos para guardar notas');
+                showToast('No hay alumnos para guardar notas', 'warning');
                 return;
             }
             
@@ -2108,12 +2489,17 @@
             
             // Mostrar errores si existen
             if (errores.length > 0) {
-                alert('⚠️ Errores encontrados:\n\n' + errores.join('\n'));
+                showModal({
+                    icon: '⚠️',
+                    title: 'Errores de validación',
+                    message: errores.join('<br>'),
+                    confirmText: 'Corregir'
+                });
                 return;
             }
             
             if (!hayDatos) {
-                alert('⚠️ No has ingresado ninguna nota. Escribe al menos una nota antes de guardar.');
+                showToast('No has ingresado ninguna nota. Escribe al menos una nota antes de guardar.', 'warning');
                 return;
             }
             
@@ -2133,12 +2519,12 @@
         function enviarNotasPorEmail() {
             const emailDestinatario = document.getElementById('email-destinatario').value.trim();
             if (!emailDestinatario) {
-                alert('⚠️ Por favor ingresa un email válido');
+                showToast('Por favor ingresa un email válido', 'warning');
                 return;
             }
             
             if (!emailDestinatario.includes('@')) {
-                alert('⚠️ El email no es válido');
+                showToast('El email no es válido', 'warning');
                 return;
             }
             
@@ -2150,7 +2536,7 @@
             const rows = tbody.querySelectorAll('tr');
             
             if (rows.length === 0) {
-                alert('⚠️ No hay datos en la tabla para enviar');
+                showToast('No hay datos en la tabla para enviar', 'warning');
                 return;
             }
             
@@ -2231,15 +2617,15 @@
                 .then(data => {
                     document.body.removeChild(progressDiv);
                     if (data.success) {
-                        alert('✅ Email enviado exitosamente a ' + emailDestinatario + '\n\n📎 Adjuntos:\n• Excel (.xlsx)\n• PDF (.pdf)\n• Imagen (.png)');
+                        showToast('Email enviado exitosamente a ' + emailDestinatario + ' con 3 archivos adjuntos', 'success', 5000);
                     } else {
-                        alert('❌ Error al enviar email: ' + data.message);
+                        showToast('Error al enviar email: ' + data.message, 'error');
                     }
                 })
                 .catch(error => {
                     document.body.removeChild(progressDiv);
                     console.error('Error:', error);
-                    alert('❌ Error al enviar email. Por favor intenta de nuevo.');
+                    showToast('Error al enviar email. Por favor intenta de nuevo.', 'error');
                 });
         }
         
@@ -2362,7 +2748,7 @@
             const rows = tbody.querySelectorAll('tr');
             
             if (rows.length === 0) {
-                alert('⚠️ No hay datos en la tabla para exportar');
+                showToast('No hay datos en la tabla para exportar', 'warning');
                 return;
             }
             
@@ -2404,7 +2790,7 @@
             const tabla = document.getElementById('tabla-notas');
             
             if (!tabla || tabla.querySelector('tbody').children.length === 0) {
-                alert('⚠️ No hay datos en la tabla para exportar');
+                showToast('No hay datos en la tabla para exportar', 'warning');
                 return;
             }
             
@@ -2457,7 +2843,7 @@
             }).catch(error => {
                 document.body.removeChild(tablaClonada);
                 console.error('Error al generar PDF:', error);
-                alert('Error al generar PDF. Por favor intenta de nuevo.');
+                showToast('Error al generar PDF. Por favor intenta de nuevo.', 'error');
             });
         }
         
@@ -2465,7 +2851,7 @@
             const tabla = document.getElementById('tabla-notas');
             
             if (!tabla || tabla.querySelector('tbody').children.length === 0) {
-                alert('⚠️ No hay datos en la tabla para exportar');
+                showToast('No hay datos en la tabla para exportar', 'warning');
                 return;
             }
             
@@ -2502,9 +2888,233 @@
             }).catch(error => {
                 document.body.removeChild(tablaClonada);
                 console.error('Error al generar imagen:', error);
-                alert('Error al generar imagen. Por favor intenta de nuevo.');
+                showToast('Error al generar imagen. Por favor intenta de nuevo.', 'error');
             });
         }
+        
+        // ========== PASO 5: PUBLICAR EN TABLERO ==========
+        
+        async function publicarEnTablero() {
+            const cursoSelector = document.getElementById('curso-selector');
+            const tbody = document.getElementById('tbody-notas');
+            
+            // Validaciones
+            if (!cursoSelector.value) {
+                showToast('Por favor selecciona un curso primero', 'warning');
+                return;
+            }
+            
+            const rows = tbody.querySelectorAll('tr');
+            if (rows.length === 0) {
+                showToast('No hay notas en la tabla para publicar', 'warning');
+                return;
+            }
+            
+            try {
+                // Mostrar mensaje de cargando
+                showToast('Generando imagen de la tabla...', 'info', 2000);
+                
+                // Generar imagen de la tabla
+                const imagenBase64 = await generarImagenBase64();
+                
+                console.log('Imagen capturada, tamaño:', imagenBase64.length);
+                
+                // Preparar datos para enviar
+                const cursoId = cursoSelector.value;
+                const cursoNombre = cursoSelector.options[cursoSelector.selectedIndex].text;
+                
+                showToast('Enviando al servidor...', 'info', 2000);
+                
+                // Enviar al servidor
+                const response = await fetch('/api/publicar-tablero', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        curso_id: cursoId,
+                        curso_nombre: cursoNombre,
+                        imagen_base64: imagenBase64
+                    })
+                });
+                
+                console.log('Respuesta del servidor:', response.status);
+                
+                const data = await response.json();
+                console.log('Datos:', data);
+                
+                if (data.success) {
+                    showToast('¡Notas publicadas exitosamente en el tablero!', 'success', 5000);
+                } else {
+                    showToast(data.error || 'Error al publicar las notas', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error completo:', error);
+                showToast('Error al publicar las notas: ' + error.message, 'error', 5000);
+            }
+        }
+        
+        // ========== TABLERO DE NOTAS PÚBLICO ==========
+        
+        async function cargarPublicacionesTablero() {
+            const contenedor = document.getElementById('contenedor-tarjetas-notas');
+            const mensajeSinNotas = document.getElementById('mensaje-sin-notas');
+            
+            try {
+                const response = await fetch('/api/tablero-notas');
+                const data = await response.json();
+                
+                if (data.success && data.publicaciones && data.publicaciones.length > 0) {
+                    contenedor.innerHTML = '';
+                    mensajeSinNotas.style.display = 'none';
+                    
+                    data.publicaciones.forEach(pub => {
+                        const tarjeta = crearTarjetaNota(pub);
+                        contenedor.appendChild(tarjeta);
+                    });
+                } else {
+                    contenedor.innerHTML = '';
+                    mensajeSinNotas.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Error cargando publicaciones:', error);
+                showToast('Error al cargar las notas publicadas', 'error');
+            }
+        }
+        
+        function crearTarjetaNota(publicacion) {
+            const tarjeta = document.createElement('div');
+            tarjeta.style.cssText = `
+                background: white;
+                border-radius: 15px;
+                padding: 20px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            `;
+            
+            // Formatear fecha
+            const fecha = new Date(publicacion.fecha_publicacion);
+            const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            tarjeta.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                        📊
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="margin: 0; font-size: 18px; color: #333; font-weight: 600;">
+                            ${publicacion.curso_nombre}
+                        </h3>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #999;">
+                            ${fechaFormateada}
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="background: #f5f5f5; border-radius: 10px; padding: 15px; margin-bottom: 12px;">
+                    <p style="margin: 0; font-size: 14px; color: #666;">
+                        👨‍🏫 <strong>${publicacion.profesor_nombre}</strong>
+                    </p>
+                </div>
+                
+                <div style="text-align: center; padding: 10px 0;">
+                    <span style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; font-weight: 600; font-size: 14px;">
+                        <span style="font-size: 20px;">👁️</span>
+                        Ver notas completas
+                    </span>
+                </div>
+            `;
+            
+            // Efecto hover
+            tarjeta.addEventListener('mouseenter', () => {
+                tarjeta.style.transform = 'translateY(-5px)';
+                tarjeta.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+                tarjeta.style.borderColor = '#667eea';
+            });
+            
+            tarjeta.addEventListener('mouseleave', () => {
+                tarjeta.style.transform = 'translateY(0)';
+                tarjeta.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+                tarjeta.style.borderColor = 'transparent';
+            });
+            
+            // Click para ver la imagen completa
+            tarjeta.addEventListener('click', () => {
+                mostrarModalNotasCompletas(publicacion);
+            });
+            
+            return tarjeta;
+        }
+        
+        function mostrarModalNotasCompletas(publicacion) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                box-sizing: border-box;
+            `;
+            
+            modal.innerHTML = `
+                <div style="position: relative; max-width: 90%; max-height: 90%; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 50px rgba(0,0,0,0.5);">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2 style="margin: 0; font-size: 24px;">${publicacion.curso_nombre}</h2>
+                            <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Publicado por ${publicacion.profesor_nombre}</p>
+                        </div>
+                        <button id="cerrar-modal-notas" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 32px; cursor: pointer; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+                            ×
+                        </button>
+                    </div>
+                    <div style="padding: 20px; max-height: calc(90vh - 100px); overflow-y: auto;">
+                        <img src="data:image/png;base64,${publicacion.imagen_base64}" style="width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Cerrar modal
+            document.getElementById('cerrar-modal-notas').addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            // Cerrar al hacer click fuera
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+            
+            // Cerrar con tecla ESC
+            const cerrarConEsc = (e) => {
+                if (e.key === 'Escape') {
+                    if (document.body.contains(modal)) {
+                        document.body.removeChild(modal);
+                    }
+                    document.removeEventListener('keydown', cerrarConEsc);
+                }
+            };
+            document.addEventListener('keydown', cerrarConEsc);
+        }
+        
+        // ========== FIN TABLERO DE NOTAS ==========
         
         // ========== FIN SISTEMA DE NOTAS INTERACTIVO ==========
         
@@ -2744,20 +3354,20 @@
                     btnTexto.textContent = '✅ Completada';
                     btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
                     
-                    // Mostrar mensaje de éxito
-                    alert('✅ ' + data.message + '\n\n📊 Progreso: ' + data.clases_completadas + '/' + data.total_clases + ' clases (' + data.porcentaje + '%)');
+                    // Mostrar Toast de éxito
+                    showToast('Progreso: ' + data.clases_completadas + '/' + data.total_clases + ' clases (' + data.porcentaje + '%)', 'success');
                     
                     // Actualizar el sidebar
                     actualizarSidebarProgreso(cursoSlug);
                 } else {
-                    alert('❌ ' + data.message);
+                    showToast(data.message, 'error');
                     btn.disabled = false;
                     btnTexto.textContent = '✅ Marcar como completada';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('❌ Error al completar la clase. Por favor intenta de nuevo.');
+                showToast('Error al completar la clase. Por favor intenta de nuevo.', 'error');
                 btn.disabled = false;
                 btnTexto.textContent = '✅ Marcar como completada';
             });
@@ -2929,6 +3539,30 @@
                         return;
                     }
                     
+                    // Proteger Subir Notas - solo profesores
+                    const esProfesor = {{ 'true' if usuario and usuario.es_profesor else 'false' }};
+                    if (seccionId === 'subir-notas') {
+                        if (!usuarioLogueado) {
+                            showModal({
+                                icon: '🔒',
+                                title: 'Inicio de sesión requerido',
+                                message: 'Debes iniciar sesión para acceder a esta sección.',
+                                confirmText: 'Iniciar sesión',
+                                onConfirm: () => cargarLoginEnContenedor()
+                            });
+                            return;
+                        }
+                        if (!esProfesor) {
+                            showModal({
+                                icon: '👨‍🏫',
+                                title: 'Sección exclusiva para profesores',
+                                message: 'Esta área está reservada únicamente para profesores. Si eres profesor y no tienes acceso, contacta al administrador.',
+                                confirmText: 'Entendido'
+                            });
+                            return;
+                        }
+                    }
+                    
                     // Encontrar TODAS las secciones (incluyendo las que están visibles)
                     const todasLasSecciones = document.querySelectorAll(".main > div");
                     const seccionesActivas = Array.from(todasLasSecciones).filter(
@@ -2954,6 +3588,10 @@
                                     seccion.style.display = "flex";
                                     // Cargar progreso cuando se abre Universidad
                                     cargarProgresoUsuario();
+                                } else if (seccionId === "tablero-notas") {
+                                    seccion.style.display = "block";
+                                    // Cargar publicaciones del tablero
+                                    cargarPublicacionesTablero();
                                 } else {
                                     seccion.style.display = "block";
                                 }
@@ -2974,6 +3612,9 @@
                         if (seccion) {
                             if (seccionId === "u-biblica") {
                                 seccion.style.display = "flex";
+                            } else if (seccionId === "tablero-notas") {
+                                seccion.style.display = "block";
+                                cargarPublicacionesTablero();
                             } else {
                                 seccion.style.display = "block";
                             }
@@ -3017,8 +3658,162 @@
                 navLinks.classList.remove('scrolled');
             }
         });
+
+        // Indicadores de scroll horizontal en el menú
+        function updateScrollIndicators() {
+            const navLinks = document.querySelector('.nav-links');
+            const scrollLeft = navLinks.scrollLeft;
+            const scrollWidth = navLinks.scrollWidth;
+            const clientWidth = navLinks.clientWidth;
+            
+            // Mostrar sombra izquierda si hay scroll hacia la izquierda
+            if (scrollLeft > 20) {
+                navLinks.classList.add('show-left-shadow');
+            } else {
+                navLinks.classList.remove('show-left-shadow');
+            }
+            
+            // Mostrar sombra derecha si hay más contenido a la derecha
+            if (scrollLeft < scrollWidth - clientWidth - 20) {
+                navLinks.classList.add('show-right-shadow');
+            } else {
+                navLinks.classList.remove('show-right-shadow');
+            }
+        }
+
+        // Ejecutar al cargar y al hacer scroll horizontal
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelector('.nav-links');
+            updateScrollIndicators();
+            navLinks.addEventListener('scroll', updateScrollIndicators);
+            window.addEventListener('resize', updateScrollIndicators);
+
+            // Animación de rebote inicial solo si hay contenido scrolleable
+            setTimeout(() => {
+                if (navLinks.scrollWidth > navLinks.clientWidth) {
+                    navLinks.classList.add('initial-bounce');
+                    // Remover la clase después de la animación para que no se repita
+                    setTimeout(() => {
+                        navLinks.classList.remove('initial-bounce');
+                    }, 2000);
+                }
+            }, 500);
+        });
     </script>
     <script>
+        // ========== SISTEMA DE TOAST NOTIFICATIONS ==========
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            const titles = {
+                success: 'Éxito',
+                error: 'Error',
+                warning: 'Advertencia',
+                info: 'Información'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type]}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <div class="toast-close" onclick="this.parentElement.remove()">×</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto-cerrar después del tiempo especificado
+            setTimeout(() => {
+                toast.classList.add('toast-out');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // ========== SISTEMA DE MODAL PERSONALIZADO ==========
+        function showModal(options) {
+            const {
+                icon = '⚠️',
+                title = 'Atención',
+                message = '',
+                confirmText = 'Aceptar',
+                cancelText = null,
+                onConfirm = null,
+                onCancel = null
+            } = options;
+
+            // Crear overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'custom-modal-overlay';
+            
+            // Crear modal
+            const modal = document.createElement('div');
+            modal.className = 'custom-modal';
+            
+            // Botones
+            let buttonsHTML = '';
+            if (cancelText) {
+                buttonsHTML = `
+                    <button class="custom-modal-btn custom-modal-btn-secondary" onclick="closeCustomModal(false)">${cancelText}</button>
+                    <button class="custom-modal-btn custom-modal-btn-primary" onclick="closeCustomModal(true)">${confirmText}</button>
+                `;
+            } else {
+                buttonsHTML = `
+                    <button class="custom-modal-btn custom-modal-btn-primary" onclick="closeCustomModal(true)">${confirmText}</button>
+                `;
+            }
+            
+            modal.innerHTML = `
+                <div class="custom-modal-header">
+                    <div class="custom-modal-icon">${icon}</div>
+                    <div class="custom-modal-title">${title}</div>
+                    <div class="custom-modal-message">${message}</div>
+                </div>
+                <div class="custom-modal-footer">
+                    ${buttonsHTML}
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            // Guardar callbacks
+            overlay._onConfirm = onConfirm;
+            overlay._onCancel = onCancel;
+            
+            // Cerrar al hacer clic fuera del modal
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeCustomModal(false);
+                }
+            });
+            
+            return overlay;
+        }
+
+        function closeCustomModal(confirmed) {
+            const overlay = document.querySelector('.custom-modal-overlay');
+            if (!overlay) return;
+            
+            if (confirmed && overlay._onConfirm) {
+                overlay._onConfirm();
+            } else if (!confirmed && overlay._onCancel) {
+                overlay._onCancel();
+            }
+            
+            overlay.style.animation = 'fadeOut 0.2s ease-out';
+            setTimeout(() => overlay.remove(), 200);
+        }
+
         function toggleMenu() {
             const menu = document.getElementById("menuOculto");
             menu.classList.toggle("mostrar");
