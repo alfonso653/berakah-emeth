@@ -3326,7 +3326,12 @@
             const btnTexto = document.getElementById('btnTexto');
             
             if (!btn) {
-                alert('❌ Error: Botón no encontrado');
+                showToast('Error: Botón no encontrado', 'error');
+                return;
+            }
+            
+            // Evitar clics duplicados - verificar si ya está procesando
+            if (btn.disabled) {
                 return;
             }
             
@@ -3334,11 +3339,11 @@
             const claseSlug = btn.getAttribute('data-clase');
             
             if (!cursoSlug || !claseSlug) {
-                alert('❌ Error: Faltan datos del curso o clase');
+                showToast('Error: Faltan datos del curso o clase', 'error');
                 return;
             }
             
-            // Cambiar estado del botón
+            // Deshabilitar inmediatamente para evitar doble clic
             btn.disabled = true;
             btnTexto.textContent = '⏳ Guardando...';
             
@@ -3355,10 +3360,17 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // Si ya estaba completada, no mostrar modal
+                    if (data.ya_completada) {
+                        btnTexto.textContent = '✅ Completada';
+                        btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+                        return;
+                    }
+                    
                     btnTexto.textContent = '✅ Completada';
                     btn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
                     
-                    // Mostrar Modal elegante de éxito
+                    // Mostrar Modal elegante de éxito solo la primera vez
                     showModal({
                         icon: '🎉',
                         title: '¡Clase Completada!',
@@ -3373,9 +3385,10 @@
                     // Actualizar el sidebar inmediatamente
                     actualizarSidebarProgreso(cursoSlug);
                 } else {
-                    showToast(data.message, 'error');
+                    // Re-habilitar botón solo si hubo error real
                     btn.disabled = false;
                     btnTexto.textContent = '✅ Marcar como completada';
+                    showToast(data.message || 'Error al completar la clase', 'error');
                 }
             })
             .catch(error => {
