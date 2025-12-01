@@ -193,8 +193,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
-            padding: 18px 30px;
+            flex-wrap: wrap; /* Permite ajuste automático en PC */
+            gap: 8px;
+            padding: 14px 20px;
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -236,16 +237,12 @@
             opacity: 1;
         }
 
-        /* Animación de rebote inicial - indica que es scrolleable */
+        /* Animación de rebote inicial - solo en móvil */
         @keyframes bounceScroll {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-15px); }
             50% { transform: translateX(0); }
             75% { transform: translateX(-15px); }
-        }
-
-        .nav-links.initial-bounce {
-            animation: bounceScroll 1.5s ease-in-out 0.5s 1;
         }
 
         .nav-links.scrolled {
@@ -254,20 +251,22 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
         }
 
+        /* Estilos para PC - fuente más pequeña, todo visible */
         .nav-links a {
             text-decoration: none;
             color: #2d3748;
             font-weight: 600;
-            font-size: 15px;
-            padding: 12px 24px;
+            font-size: 13px;
+            padding: 10px 16px;
             border-radius: 12px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             position: relative;
             background: transparent;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
         }
 
         .nav-links a::before {
@@ -481,6 +480,11 @@
 
             .nav-links::-webkit-scrollbar {
                 display: none; /* Chrome/Safari */
+            }
+
+            /* Animación de rebote SOLO en móvil */
+            .nav-links.initial-bounce {
+                animation: bounceScroll 1.5s ease-in-out 0.5s 1;
             }
 
             /* Indicadores de scroll más visibles en móvil */
